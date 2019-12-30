@@ -1,0 +1,277 @@
+@media (max-width: 480px) {
+  .side-menu {
+    z-index: 10 !important;
+  }
+  .button-menu-mobile {
+    display: block;
+  }
+  .search-bar {
+    display: none !important;
+  }
+  .sidebar-inner {
+    overflow: auto !important;
+    height: 100%;
+    bottom: 0;
+  }
+  /**********************************AWDHESH CODE*************************************************************/
+  .nav-justified>.dropdown .dropdown-menu {
+    margin-left: 320px;
+    margin-top: -150px;
+}
+
+.container-fluid>.navbar-collapse, .container-fluid>.navbar-header, .container>.navbar-collapse, .container>.navbar-header {
+    margin-right: -5px;
+    margin-left: -215px;
+}
+.home_m{margin-left: -28px;}
+.ondemand_m{margin-left: 35px !important;}
+.contact_m{margin-left: 8px!important;}
+#img_desktop{display:none;}
+#img_mobile{display: block !important;
+            margin-top: -244px;
+    margin-left:  40%;
+    width: 310px;}
+/* .login_b{margin-left: 252px; */
+    /* margin-top: -13px; */
+    /* margin-bottom: -40px;} */
+/* .register_b{margin-bottom: -6px; */
+    /* margin-top: -20px; */
+    /* margin-left: 89px;} */
+
+	
+  /*******************************************END AWDHESH COD***************************************************/
+}
+
+
+
+/* responsive 9-9-18 */
+@media(max-width: 480px){
+body{
+width:100%;
+}	
+
+#img_mobile {
+    display: block !important;
+    margin-top: -225px;
+    margin-left: 40%;
+    width: 212px;
+}
+
+    .nav >li {
+    position: relative;
+    display: inline-block;
+}
+	
+.service-contnt h3 {	
+font-size:15px !important;	
+}
+
+.review{color:#000;}
+.form_cont .input-group{width:100%!important;}
+.car_form {
+    
+    width: 100%;
+    padding: 10px; 
+    margin: 10px 0;
+    top:0!important;
+     left: 0; 
+	 box-shadow:none!important;
+   
+}
+.no-space{left:0!important;right:0!important;}
+.serb{
+	font-size:11px!important;
+    margin-bottom:10px!important;
+}
+
+
+
+
+.serv {font-size: 14px!important;margin-bottom: 10px!important;}
+.comp{font-size: 14px!important;}
+.carwash {
+    padding: 10px;
+}
+.u_ser {
+ padding: 15px; 
+ margin-top: 0px; 
+}
+.social{
+padding: 0;}
+.social li:first-child {
+   display: block!important;
+   margin-right: 37px;
+}
+.review p {
+    margin-bottom:10px;
+    padding: 20px;
+}
+
+.review h3 {
+
+    font-size: 24px;
+}
+.heading-block h4 {
+    font-size: 14px !important;
+    font-weight: 700;
+	color:#ffff !important;
+}
+.adjust {
+   position: absolute !important;
+    bottom: 41px !important;
+    right: 21px !important;
+    color: white !important;
+}
+.choose_img img {
+    width: 40px;
+    height: 40px;
+}
+.flexslider.progression-studios-dashboard-slider h2 {
+    font-size: 34px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+}
+.form_cont {
+    padding:0px !important;
+}
+.form-group {
+    padding:0px !important;
+}
+.def{
+padding:0px !important;	
+}
+.pck_img img{
+height: 174px !important;
+    width: 100% !important;	
+}
+.def h1{
+text-align:center;
+font-size: 21px;
+}
+.package_desc {
+    margin-bottom: 5px;
+    font-size: 10px;
+    margin-top: -11px;
+    text-align: center;
+	padding: 2px;
+}
+.buttons {
+    
+    font-size: 15px;
+    padding: 0.3em 5em;
+    
+}
+.space {
+    padding: 11px;
+}
+.btn-round{
+padding: 11px 21px !important;	
+border-radius: 31px !important;	
+}
+.table tr {
+text-align:center;	
+	
+}
+.despasito{
+ font-size:29px !important;	
+}
+.car_form2{
+width:257px;	
+padding:10px !important;
+	
+}
+.car_form2 h1{
+font-size:31px;
+text-align:center;	
+}
+.top ul{
+padding:0px!important;	
+}
+.top ul li {
+    width: 50%;
+    height: 25%;
+   
+}
+.top ul li img {
+  height: 174px;
+    
+}
+
+}
+
+@media (min-width:481px) and (max-width: 768px){
+body{
+width:100%	
+}	
+	
+
+.u_ser {
+    padding: 0px 0px 0px 15px;
+    margin-top: 0px;
+}
+.form_cont .input-group{width:100%!important;}
+.submi{margin-top:10px;}
+.car_form {
+    
+    top: 28vw!important;
+    padding: 10px; 
+    margin: 10px 0;
+    
+    left: 12px; 
+   
+}
+.serv {font-size: 14px!important;margin-top: 10px!important;margin-bottom: 10px!important;}
+.comp{font-size: 14px!important;}
+.p-right
+{float:right;}
+.adjust {
+   position: absolute !important;
+    bottom: 54px;
+    right: 21px;
+    color: white !important;
+}
+.heading-block h4 {
+    color:#ffff !important;
+}
+.flexslider.progression-studios-dashboard-slider h2 {
+    font-size: 32px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    position: absolute;
+}
+.progression-studios-slider-dashboard-caption-width {
+    max-width: 480px;
+    margin-right: 57px;
+    position: relative;
+    z-index: 10;
+    float: right;
+    bottom: 57px;
+}
+.maps {
+    margin-top: 20px !important;
+    
+}
+.serb{
+	
+    margin-bottom:10px!important;
+}
+
+}
+@media(min-width:769px) and (max-width:1024px)
+{
+	.form_wit{width:94%!important;}
+	.car_form {
+    
+    top: 22vw!important;}
+	.u_ser {
+    padding: 0px 0px 0px 35px;
+    margin-top: -66px;
+}
+.choose_img {
+    
+padding: 8px;}
+
+}
+
+
+
