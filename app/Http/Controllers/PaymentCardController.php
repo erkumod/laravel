@@ -27,8 +27,16 @@ class PaymentCardController extends Controller
         $mycard->status        = $request->status;
         $mycard->expiry_year      = $request->expiry_year;
         $mycard->user_id        = $user_id;    
-        if ($request->primary)    
-	        $mycard->primary        = $request->primary;        
+		$card = PaymentCard::where([
+			['user_id', '=', $user_id],
+			['primary', '=', 'true']
+		])->get();
+		if ($request->primary){
+			$mycard->primary        = $request->primary;        
+		}
+		if($card && count($card) > 0){
+			$mycard->primary        = 'false';        
+		}
         $mycard->type        = $request->type;        
         $mycard->name        = $request->name;        
         $mycard->save();

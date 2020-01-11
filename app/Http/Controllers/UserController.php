@@ -515,12 +515,22 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'brand_id'        => 'required',
             'model_id'        => 'required',
-               
+            'vehicle_no'      => 'required',
             ]);
 
         
 
         $mycar = new MyCar;
+        $car = MyCar::where([
+			['user_id', '=', $user_id],
+			['primary', '=', true]
+		])->get();
+		if ($request->primary){
+			$mycar->primary        = $request->primary ? true : false ;        
+		}
+		if($car && count($car) > 0){
+			$mycar->primary        = false;        
+        }
         $mycar->car_brand      = $request->brand_id;
         $mycar->car_model      = $request->model_id;
         $mycar->user_id        = $user_id;  
