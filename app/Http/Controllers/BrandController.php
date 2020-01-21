@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-Use File;
-use Image;
 use App\Brand;
 use Input;
 
@@ -47,16 +45,9 @@ class BrandController extends Controller
         $brand = new Brand;
         if (Input::hasfile('brand_img')) {
            $file=Input::file('brand_img');
-           $directoryName = '/images/brand';
-                   
-           if(!is_dir(public_path($directoryName))){
-               //Directory does not exist, so lets create it.
-               $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
-           }
-           Image::make(file_get_contents($file))->save(public_path($file->getClientOriginalName()));
-        //    $mycar->car_image = $filename;             
-        //    $file->move(public_path(). '', $file->getClientOriginalName());
-           $brand->brand_img=$file->getClientOriginalName();
+           $filename= time().'.'.$file->getClientOriginalExtension();
+           $file->move(public_path(). '/images/brand', $filename);
+           $brand->brand_img=$filename;
         }
         $brand->brand_name          = $request->brand_name;
         $brand->description   = $request->description;
