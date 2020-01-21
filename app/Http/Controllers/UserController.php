@@ -639,7 +639,7 @@ class UserController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mycar = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->select('my_cars.id as car_id','my_cars.*', 'carmodels.*', 'brands.*')->where('my_cars.user_id', $user_id)->orderBy('my_cars.status', 'Desc')->get();
+    $mycar = MyCar::where('my_cars.user_id', $user_id)->orderBy('my_cars.status', 'Desc')->get();
     if ($mycar){
         $status = 200;
         $message = 'Data Processed';
