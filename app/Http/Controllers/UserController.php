@@ -520,37 +520,36 @@ class UserController extends Controller
 
         
 
-        $mycar = new MyCar;
+
+        $dataArr = array(
+            "car_brand"     => $request->brand_id,
+            "car_model"     => $request->model_id,
+            "user_id"       => $user_id,
+            "status"        => $request->status,
+            "vehicle_no"    => $request->vehicle_no,
+        );
         $car = MyCar::where([
 			['user_id', '=', $user_id],
 			['primary', '=', true]
 		])->get();
 		if ($request->primary){
-			$mycar->primary        = $request->primary ? true : false ;        
+			$dataArr['primary']        = $request->primary ? true : false ;        
 		}
 		if($car && count($car) > 0){
-			$mycar->primary        = false;        
+			$dataArr['primary']        = false;        
         }
-        $mycar->car_brand      = $request->brand_id;
-        $mycar->car_model      = $request->model_id;
-        $mycar->user_id        = $user_id;  
-        $mycar->status        = $request->status;      
-        $mycar->vehicle_no        = $request->vehicle_no;   
-         
         if($request->car_image){
-                $directoryName = '/car_image/'.$user_id;
-               
-                if(!is_dir(public_path($directoryName))){
-                    //Directory does not exist, so lets create it.
-                    $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
-                }
-                $filename = $directoryName."/". time() . '.jpg' ;
-                Image::make(file_get_contents($request->car_image))->save(public_path($filename));
-                $mycar->car_image = $filename;                
-            }   
-        $mycar->save();
-
-
+            $directoryName = '/car_image/'.$user_id;
+           
+            if(!is_dir(public_path($directoryName))){
+                //Directory does not exist, so lets create it.
+                $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
+            }
+            $filename = $directoryName."/". time() . '.jpg' ;
+            Image::make(file_get_contents($request->car_image))->save(public_path($filename));
+            $dataArr['car_image'] = $filename;                
+        }   
+        $mycar = MyCar::create($dataArr);
         if ($mycar){
                 $response->mycar = $mycar;
                 $status = 200;
