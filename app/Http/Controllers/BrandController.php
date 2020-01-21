@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use File;
+use Image;
 use App\Brand;
 use Input;
 
