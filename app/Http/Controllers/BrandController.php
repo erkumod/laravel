@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Brand;
 use Input;
-
+use File;
 class BrandController extends Controller
 {
    /**
