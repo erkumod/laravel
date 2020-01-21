@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+Use File;
 use App\Brand;
 use Input;
 
