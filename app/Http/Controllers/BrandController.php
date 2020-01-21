@@ -46,7 +46,12 @@ class BrandController extends Controller
         if (Input::hasfile('brand_img')) {
            $file=Input::file('brand_img');
            $filename= time().'.'.$file->getClientOriginalExtension();
-           $file->move(public_path(). '/images/brand', $filename);
+           $directoryName = '/images/brand';
+           if(!is_dir(public_path($directoryName))){
+                //Directory does not exist, so lets create it.
+                $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
+            }
+           $file->move(public_path($directoryName), $filename);
            $brand->brand_img=$filename;
         }
         $brand->brand_name          = $request->brand_name;
