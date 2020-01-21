@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request, Hash, StdClass, Mail;
 use App\User;
 use App\Vehicle;
-use App\Complain;
+use App\Complaint;
 use App\requests;
 use App\callbacks;
 use App\contacts;
@@ -49,7 +49,7 @@ class AdminController extends Controller
 
     public function complain()
     {
-        $complains = Complain::all();
+        $complains = Complaint::all();
         return view('admin.complains', compact('complains'));
     }
 
