@@ -90,42 +90,46 @@ class AuthApiController extends Controller
     public function googleloginfun(Request $request)
     {
         $credentials = $request->only('name', 'mobile',  'email', 'provider_id');
-        $user = User::where('provider_id', $request->provider_id)->first();
-        $user = User::where('email', $request->email)->first();
-        $password = 'password123';
+        // $user = User::where('provider_id', $request->provider_id)->first();
+        // $user = User::where('email', $request->email)->first();
+        // // $password = 'password123';
         $provider = $request->provider;
-        if ($user){
-            $user->provider_id = $request->provider_id;
-            $user->provider = $provider;
-            $user->update();
+        // if ($user){
+        //     $user->provider_id = $request->provider_id;
+        //     $user->provider = $provider;
+        //     $user->update();
 
-        }
-        else{
-            $rules = [
-                'name' => 'required|max:255',
-                'email' => 'required|email|max:255|unique:users',
-            ];
-            $validator = Validator::make($credentials, $rules);
-            if($validator->fails()) {
-                return response()->json(['success'=> false, 'error'=> $validator->messages()]);
-                if (!$token = JWTAuth::attempt([
-                                            'email' => $request->email,
-                                            'password' => $password
-                                            ])) {
-                    return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 401);
-                }
-                else{
-                    return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
-
-                }
-                return response()->json(['success'=> false, 'error'=> $validator->messages()]);
-            }
-        }
+        //     if (!$token = JWTAuth::fromUser($user)) {
+        //         return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 401);
+        //     }
+        //     else{
+        //         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);        
+        //     }
+        // }
+        // else{
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'provider_id' => 'required|max:255'
+        ];
+        $validator = Validator::make($credentials, $rules);
         $user = User::where('email', $request->email)->where('provider_id', $request->provider_id)->first();
+        if(isset($user) && $token = JWTAuth::fromUser($user)){
+            return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
+        }
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'provider_id' => 'required|max:255'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            return response()->json(['success'=> false, 'error'=> $validator->messages()]);
+        }
         if (!isset($user) || !$token = JWTAuth::fromUser($user)) {
             $name = $request->name;
             $email = $request->email;
-            $password = 'password@123';
+            $password = str_random(10);
             $mobile = $request->mobile;
             $provider_id = $request->provider_id;
             $user = User::create(['email' => $email,'provider_id' => $provider_id,'provider' => $provider ,'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
@@ -142,6 +146,7 @@ class AuthApiController extends Controller
             return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
         }        
         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
+        // }
     }
     /**
      * Log out
