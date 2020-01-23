@@ -14,8 +14,7 @@ class AddIsPrimaryCardColoumn extends Migration
     public function up()
     {
         Schema::table('payment_cards', function (Blueprint $table) {
-            $table->dropColumn('primary');
-            // $table->boolean('primary')->default(false);
+            $table->boolean('primary')->default(0);
         });
     }
 
@@ -27,8 +26,7 @@ class AddIsPrimaryCardColoumn extends Migration
     public function down()
     {
         Schema::table('payment_cards', function (Blueprint $table) {
-            // $table->boolean('primary')->default(false);
-            // $table->dropColumn('primary');
+            $table->dropColumn('primary');
         });
     }
 }
