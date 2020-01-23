@@ -33,10 +33,6 @@ class PaymentCardController extends Controller
 		])->get();
 
 		$mycard->primary = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
-		if ($mycard->primary){
-			$mycard->primary        = $mycard->primary;        
-		}
-
 		if($card && count($card) > 0 && $mycard->primary == true){
 			PaymentCard::where([
 				['user_id', '=', $user_id],

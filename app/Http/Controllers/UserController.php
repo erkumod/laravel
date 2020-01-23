@@ -528,16 +528,22 @@ class UserController extends Controller
             "status"        => $request->status,
             "vehicle_no"    => $request->vehicle_no,
         );
+
         $car = MyCar::where([
 			['user_id', '=', $user_id],
 			['primary', '=', true]
-		])->get();
-		if ($request->primary){
-			$dataArr['primary']        = $request->primary ? true : false ;        
-		}
-		if($car && count($car) > 0){
-			$dataArr['primary']        = false;        
+        ])->get();
+
+        $dataArr['primary'] = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
+
+		if($car && count($car) > 0 && $dataArr['primary'] == true){
+            MyCar::where([
+				['user_id', '=', $user_id],
+				['primary', '=', true]
+			])->update(['primary' => false]); 
+			$dataArr['primary']        = true;        
         }
+
         if($request->car_image){
             $directoryName = '/car_image/'.$user_id;
            
