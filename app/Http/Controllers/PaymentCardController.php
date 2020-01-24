@@ -79,7 +79,20 @@ class PaymentCardController extends Controller
 	        $mycard->type        = $request->type;        
 	        $mycard->user_id        = $user_id;  
 	        $mycard->status        = $request->status;
-	        $mycard->name        = $request->name;
+			$mycard->name        = $request->name;
+			$card = PaymentCard::where([
+				['user_id', '=', $user_id],
+				['primary', '=', true]
+			])->get();
+	
+			$mycard->primary = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
+			if($card && count($card) > 0 && $mycard->primary == true){
+				PaymentCard::where([
+					['user_id', '=', $user_id],
+					['primary', '=', true]
+				])->update(['primary' => false]);
+				$mycard->primary        = true;        
+			}
 		    $mycard->update();
 	    }
         else{
