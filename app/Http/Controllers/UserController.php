@@ -145,6 +145,7 @@ class UserController extends Controller
             $user->mobile = $userdata->mobile;
             $user->profession="";
             $user->profile_pic="";
+            $user->country_code = $userdata->country_code;
             $user->email_verification = $userdata->email_verification;
             $user->mobile_verification = $userdata->mobile_verification;
             
@@ -175,7 +176,7 @@ class UserController extends Controller
 
         if ($id){
             $userdata = User::where('id', $id)
-                            ->update(['name' => $request->name, 'mobile' => $request->mobile ]); 
+                            ->update(['name' => $request->name, 'mobile' => $request->mobile, 'country_code' => $request->country_code ]); 
 
 
             if($request->file('profile_pic')){
@@ -214,7 +215,8 @@ class UserController extends Controller
            
            if ($userdata && $userProfileData){
                 $response = new StdClass;
-                $response->id = $request->id;
+                $response->id = $id;
+                $response->country_code = $request->country_code;
                 $response->name = $request->name;
                 $response->dob = $request->dob;
                 $response->gender = $request->gender;
