@@ -43,6 +43,14 @@ Route::get('/stripefail', 'StripePaymentGatewayController@stripefail');
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function() {
+
+
+	/****************     Routes For Account CRUD       ****************/
+	Route::get('vehicle_color/datatable', 'VehicleColorController@datatable');
+	Route::resource('vehicle_color', 'VehicleColorController');
+
+
+
 	Route::get('complains', 'AdminController@complain');
 	Route::get('/washer/{id}', 'WasherController@viewwasherdetails');
 	Route::get('/activatewasher/{id}', 'WasherController@approvewasherdetails');

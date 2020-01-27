@@ -15,7 +15,8 @@
         "laravel/socialite": "^4.1",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.5.0",
-        "tymon/jwt-auth": "dev-develop"
+        "tymon/jwt-auth": "dev-develop",
+        "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
