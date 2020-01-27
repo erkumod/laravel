@@ -181,6 +181,7 @@
                                </ul>
                            </li>
                             <li><a href="{{ url('admin/carmodels')}}"> <i class="fa fa-maxcdn"></i> Car Model</a></li>
+                            <li><a href="{{ url('admin/vehicle_color')}}"> <i class="fa fa-maxcdn"></i>Vehicle Color</a></li>
 
 
                            <li class="has_sub">
