@@ -529,6 +529,7 @@ class UserController extends Controller
             "user_id"       => $user_id,
             "status"        => $request->status,
             "vehicle_no"    => $request->vehicle_no,
+            "color_name"    => $request->color_name,
         );
 
         $car = MyCar::where([
@@ -589,6 +590,7 @@ class UserController extends Controller
             $mycar->user_id        = $user_id;        
             $mycar->status        = $request->status;        
             $mycar->vehicle_no      = $request->vehicle_no;
+            $mycar->color_name      = $request->color_name;
 
             $car = MyCar::where([
                 ['user_id', '=', $user_id],
