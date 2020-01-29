@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\CarWashBooking;
 use App\MyCar;
 use StdClass;
+use Validator;
+use Carbon\Carbon;
 
 class CarWashBookingController extends Controller
 {
@@ -14,10 +16,32 @@ class CarWashBookingController extends Controller
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong!!!";
-        $validatedData = $request->validate([
+        $start_time =  Carbon::parse($request->start_time)->setTimezone('UTC');
+        $end_time =  Carbon::parse($request->end_time)->setTimezone('UTC');
+        $time = Carbon::now();
+        $validator = Validator::make($request->all(), [
             'vehicle_id'        => 'required',
-            'date'        => 'required',               
-            ]);
+            'date'              => 'required',
+            'start_time'        =>  ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
+                                        if (!(9 <= $time->diffInMinutes($start_time,false))) {
+                                            $fail('Start time must be after 10 minutes from now.');
+                                        }
+                                    }], //9 <= $time->diffInMinutes($start_time,false)
+            'end_time'         =>   ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
+                                        if (!(6 >= ($start_time->diffInMinutes($end_time,false)/60))) {
+                                            $fail('End time must be less then  6 hours from Start time.');
+                                        }
+                                    }], //6 >= ($time->diffInMinutes($end_time,false)/60)
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+        // if($time->between($morning, $evening, true)) {
+            //current time is between morning and evening
+        // } else {
+        //     //current time is earlier than morning or later than evening
+        // }
         $notes = 'No special notes';
         if ($request->notes!=null){
             $notes = $request->notes;
