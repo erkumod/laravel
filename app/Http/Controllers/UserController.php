@@ -17,6 +17,7 @@ use DB;
 use Image;
 use Hash;
 use File;
+use Validator;
 
 class UserController extends Controller
 {
@@ -635,6 +636,53 @@ class UserController extends Controller
         $response->message = $message;
         return response()->json($response);     
  }  
+
+    public function setPrimaryCar(Request $request){
+        $user_id = $request->user()->id;
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong!!!";
+        $validator = Validator::make($request->all(), [
+            'car_id'        => 'required',
+            'primary'        => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+        $mycar = MyCar::where('user_id', $user_id)->where('id', $request->car_id)->first();
+        if ($mycar){
+            $mycar->user_id        = $user_id;
+            $car = MyCar::where([
+                ['user_id', '=', $user_id],
+                ['primary', '=', true]
+            ])->get();
+            $mycar->primary = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
+            if($car && count($car) > 0 && $mycar->primary == true){
+                MyCar::where([
+                    ['user_id', '=', $user_id],
+                    ['primary', '=', true]
+                ])->update(['primary' => false]); 
+                $mycar->primary        = true;        
+            }
+            $mycar->update();
+        }
+        else{
+            $message = "This car is not yours";
+        }
+
+        if ($mycar){
+            $response->mycar = $mycar;
+            $status = 200;
+            $message = "Successfully seted car as Primary";
+        }
+
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);     
+    }
+
  public function deleteMyCar(Request $request){
         $user_id = $request->user()->id;
         $response = new StdClass;

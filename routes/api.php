@@ -81,6 +81,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('edit_car'         , 'UserController@editMyCar');
 	Route::post('delete_car'         , 'UserController@deleteMyCar');
 	Route::post('my_car'         , 'UserController@addMyCar');
+	Route::post('set_primary_car'         , 'UserController@setPrimaryCar');
 	Route::get('my_car'         , 'UserController@viewMycar');
 
 
