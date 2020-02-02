@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\PaymentCard;
 use StdClass;
+use Validator;
 
 class PaymentCardController extends Controller
 {
@@ -110,6 +111,52 @@ class PaymentCardController extends Controller
 	    $response->message = $message;
 	    return response()->json($response);     
 	}  
+
+    public function setPrimaryCard(Request $request){
+        $user_id = $request->user()->id;
+        $response = new StdClass;
+        $status = 400;
+        $validator = Validator::make($request->all(), [
+            'card_id'        => 'required',
+            'primary'        => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+        $mycard = PaymentCard::where('user_id', $user_id)->where('id', $request->card_id)->first();
+        if ($mycard){       
+            $card = PaymentCard::where([
+                ['user_id', '=', $user_id],
+                ['primary', '=', true]
+            ])->get();
+                
+            $mycard->primary = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
+            if($card && count($card) > 0 && $mycard->primary == true){
+                PaymentCard::where([
+                    ['user_id', '=', $user_id],
+                    ['primary', '=', true]
+                ])->update(['primary' => false]);
+                $mycard->primary        = true;        
+            }
+            $mycard->update();
+        }
+        else{
+            $message = "This card is not yours";
+        }
+
+        if ($mycard){
+                $response->mycards = $mycard;
+                $status = 200;
+                $message = "Set Primary card Successfully";
+
+        }   
+
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);     
+    }
+
 	public function deleteMyCard(Request $request){
 	    $user_id = $request->user()->id;
 	    $response = new StdClass;

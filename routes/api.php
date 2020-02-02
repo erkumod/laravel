@@ -87,6 +87,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('edit_card'         , 'PaymentCardController@editMyCard');
 	Route::post('delete_card'         , 'PaymentCardController@deleteMyCard');
 	Route::post('my_card'         , 'PaymentCardController@addMyCard');
+	Route::post('set_primary_card'         , 'PaymentCardController@setPrimaryCard');
 	Route::get('my_card'         , 'PaymentCardController@viewMycard');
 	
 
