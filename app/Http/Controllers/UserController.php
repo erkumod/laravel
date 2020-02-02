@@ -140,7 +140,8 @@ class UserController extends Controller
             $user = new StdClass;
             $user->name = $userdata->name;
             $user->email = $userdata->email;
-            $userProfileData = Profile::where('user_id', $id)->first();
+            $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
+            // dd($userProfileData);
             $user->dob="";
             $user->gender="";
             $user->mobile = $userdata->mobile;
@@ -157,6 +158,8 @@ class UserController extends Controller
                 $user->gender = $userProfileData->gender;
                 $user->profile_pic = $userProfileData->profile_pic;
                 $user->profession = $userProfileData->profession;
+                $user->primary_car = $userProfileData->PrimaryCar;
+                $user->primary_card = $userProfileData->PrimaryCard;
             }
             if (isset($user->profile_pic) || $user->profile_pic == null)
                 $user->profile_pic="/profile_pic/profile.png";
