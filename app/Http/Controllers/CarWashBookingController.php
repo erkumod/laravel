@@ -138,7 +138,7 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no')->where('car_wash_bookings.user_id', $user_id)->get();
+    $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->get();
     $mylist = array();;
     $mylist = array();
     foreach ($mybooking as $key => $value) {
