@@ -35,12 +35,18 @@ class WasherController extends Controller
         $response = new StdClass;
         $status = 200;
         $message = "User not registered as washer.";
-        $wash = CarWashBooking::where('status', 'Accepted')->where('accepted_by', '0')->first();
+        // $wash = CarWashBooking::where('status', 'Accepted')->where('accepted_by', '0')->first();
+        $wash = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')
+                                ->select('users.name as user_name','car_wash_bookings.*')
+                                ->where('status', 'Accepted')->where('accepted_by', '0')->first();
         if ($wash){
-            $message = "";
+            $message = "No Wash available";
         }
         else{
-            $washes = CarWashBooking::where('status', 'Pending')->where('accepted_by', '0')->get();
+            // $washes = CarWashBooking::where('status', 'Pending')->where('accepted_by', '0')->get();
+            $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')
+                                    ->select('users.name as user_name','car_wash_bookings.*')
+                                    ->where('status', 'Pending')->where('accepted_by', '0')->get();
             if ($washes){
                 $response->request_wash = $washes;
                 $status = 200;
@@ -61,7 +67,10 @@ class WasherController extends Controller
         $status = 200;
         $message = "User not registered as washer.";
 
-        $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
+        $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')
+                                ->select('users.name as user_name','car_wash_bookings.*')
+                                ->where('accepted_by', $request->user()->id)->get();
+        // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
             $response->accepted_wash = $washes;
             $status = 200;
