@@ -693,8 +693,20 @@ class UserController extends Controller
         $message = "Something Went Wrong!!!";
         
         
+        $mycar = MyCar::where('user_id', $user_id)->where('id', $request->car_id)->first();
+		if($mycar){
+			if($mycar->primary){
+				$primaryCar = MyCar::where([
+                    ['user_id', '=', $user_id],
+                    ['primary', '!=', true]
+				])->orderBy('id')->first();
+				$primaryCar->primary = true;
+				$primaryCar->save();
+			}
+			$mycar = $mycar->delete();
+		}
 
-        $mycar = MyCar::where('user_id', $user_id)->where('id', $request->car_id)->delete();
+        // $mycar = MyCar::where('user_id', $user_id)->where('id', $request->car_id)->delete();
         // $mycar->update();
 
 
