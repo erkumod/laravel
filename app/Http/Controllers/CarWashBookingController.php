@@ -21,7 +21,8 @@ class CarWashBookingController extends Controller
         $end_time =  Carbon::parse($request->end_time)->setTimezone('UTC');
         $time = Carbon::now();
         $validator = Validator::make($request->all(), [
-            // 'vehicle_id'        => 'required',
+            'vehicle_id'        => 'required',
+            'card_id'           => 'required',
             'date'              => 'required',
             'start_time'        =>  ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
                                         if (!(9 <= $time->diffInMinutes($start_time,false))) {
@@ -47,32 +48,32 @@ class CarWashBookingController extends Controller
         if ($request->notes!=null){
             $notes = $request->notes;
         }
-        $vehicle = MyCar::where([
-            ['user_id', '=', $user_id],
-            ['primary', '=', true]
-        ])->first();
-        $card = PaymentCard::where([
-            ['user_id', '=', $user_id],
-            ['primary', '=', true]
-        ])->first();
+        // $vehicle = MyCar::where([
+        //     ['user_id', '=', $user_id],
+        //     ['primary', '=', true]
+        // ])->first();
+        // $card = PaymentCard::where([
+        //     ['user_id', '=', $user_id],
+        //     ['primary', '=', true]
+        // ])->first();
         // dd($vehicle);
         $mybooking = new CarWashBooking;
         $mybooking->location      = $request->location;
-        $mybooking->vehicle_id      = $vehicle->id;
+        $mybooking->vehicle_id      = $request->vehicle_id;
         $mybooking->user_id        = $user_id;        
         $mybooking->date        = $request->date;        
         $mybooking->start_time        = $request->start_time;    
         $mybooking->end_time        = $request->end_time;        
-        $mybooking->card_id        = $card->id;        
+        $mybooking->card_id        = $request->card_id;        
         $mybooking->lot_no        = $request->lot_no;        
         $mybooking->fare        = $request->fare;        
         $mybooking->payment_type        = $request->payment_type; 
         $mybooking->notes        = $notes; 
         $mybooking->save();
         if ($mybooking){
-                $response->mybooking = $mybooking;
-                $status = 200;
-                $message = "Car wash booking saved Successfully";
+            $response->mybooking = $mybooking;
+            $status = 200;
+            $message = "Car wash booking saved Successfully";
         }   
 
         $response->status = $status;
