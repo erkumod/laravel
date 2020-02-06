@@ -162,11 +162,19 @@ class PaymentCardController extends Controller
 	    $response = new StdClass;
 	    $status = 400;
 	    $message = "Something Went Wrong!!!";
-	    
-	    
 
-	    $mycard = PaymentCard::where('user_id', $user_id)->where('id', $request->card_id)->delete();
-	    // $mycard->update();
+		$mycard = PaymentCard::where('user_id', $user_id)->where('id', $request->card_id)->first();
+		if($mycard){
+			if($mycard->primary){
+				$primaryCard = PaymentCard::where([
+                    ['user_id', '=', $user_id],
+                    ['primary', '!=', true]
+				])->orderBy('id')->first();
+				$primaryCard->primary = true;
+				$primaryCard->save();
+			}
+			$mycard = $mycard->delete();
+		}
 
 
 	    if ($mycard){
