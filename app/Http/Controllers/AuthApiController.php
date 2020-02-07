@@ -44,6 +44,7 @@ class AuthApiController extends Controller
         $email_token = base64_encode($request->email);
         $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
         
+        $user->sendEmailVerificationNotification();
         return $this->login($request);
     }
 
@@ -66,12 +67,17 @@ class AuthApiController extends Controller
         if($validator->fails()) {
             return response()->json(['success'=> false, 'error'=> "Please validate before sending"]);
         }
+        $user = User::where('email', $request->email)->first();
         try {
             // attempt to verify the credentials and create a token for the user
+            if(!$user->email_verified_at){
+                $user->sendEmailVerificationNotification();
+                return response()->json(['success' => false, 'error' => 'Please verify your email first'], 401);
+            }
             if (!$token = JWTAuth::attempt([
-                                            'email' => $request->email,
-                                            'password' => $request->password
-                                            ])) {
+                    'email' => $request->email,
+                    'password' => $request->password
+                ])) {
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
             }
         } catch (JWTException $e) {
@@ -79,9 +85,10 @@ class AuthApiController extends Controller
             return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
         }
         // all good so return the token
-        $user = User::where('email', $request->email)->first();
+       
         if ($request->device_token){
             $user->device_token = $request->device_token;
+            $user->email_verification = 'Verified';
             $user->update();
         }
         return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);

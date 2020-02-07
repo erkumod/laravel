@@ -5,7 +5,7 @@ Route::get('/', function () {
     return view('landingpage');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', 'PagesController@index')->name('home');
 
