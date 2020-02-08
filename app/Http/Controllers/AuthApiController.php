@@ -14,6 +14,7 @@ use Validator, DB, Hash, Mail, Illuminate\Support\Facades\Password, StdClass;
 // use Illuminate\Auth\Events\Registered;
 // use App\Jobs\SignupMail;
 // use App\Jobs\SendVerificationEmail;
+use Carbon\Carbon;
 
 class AuthApiController extends Controller
 {
@@ -43,7 +44,7 @@ class AuthApiController extends Controller
         $mobile = $request->mobile;
         $email_token = base64_encode($request->email);
         $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
-        
+
         $user->sendEmailVerificationNotification();
         return $this->login($request);
     }
@@ -70,7 +71,7 @@ class AuthApiController extends Controller
         $user = User::where('email', $request->email)->first();
         try {
             // attempt to verify the credentials and create a token for the user
-            if(!$user->email_verified_at){
+            if($user->provider == null && !$user->email_verified_at){
                 $user->sendEmailVerificationNotification();
                 return response()->json(['success' => false, 'error' => 'Please verify your email first'], 401);
             }
@@ -139,7 +140,15 @@ class AuthApiController extends Controller
             $password = str_random(10);
             $mobile = $request->mobile;
             $provider_id = $request->provider_id;
-            $user = User::create(['email' => $email,'provider_id' => $provider_id,'provider' => $provider ,'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
+            $user = User::create([
+                'email' => $email,
+                'provider_id' => $provider_id,
+                'provider' => $provider ,
+                'name' => $name,
+                'mobile' => $mobile,
+                'password' => Hash::make($password),
+                'email_verified_at' => Carbon::now(),
+            ]);
             if (!$token = JWTAuth::attempt([
                                         'email' => $request->email,
                                         'password' => $password
