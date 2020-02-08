@@ -71,7 +71,7 @@ class AuthApiController extends Controller
         $user = User::where('email', $request->email)->first();
         try {
             // attempt to verify the credentials and create a token for the user
-            if($user->provider == null && !$user->email_verified_at){
+            if($user && $user->provider == null && !$user->email_verified_at){
                 $user->sendEmailVerificationNotification();
                 return response()->json(['success' => false, 'error' => 'Please verify your email first'], 401);
             }
