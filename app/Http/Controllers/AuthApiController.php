@@ -46,7 +46,8 @@ class AuthApiController extends Controller
         $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
 
         $user->sendEmailVerificationNotification();
-        return $this->login($request);
+        return response()->json(['success' => true, 'error' => 'Successfully registerd,Please verify your email and then try to login'], 200);
+        // return $this->login($request);
     }
 
 
@@ -98,6 +99,9 @@ class AuthApiController extends Controller
     public function googleloginfun(Request $request)
     {
         $credentials = $request->only('name', 'mobile',  'email', 'provider_id');
+        $idTokenString = $request->provider_id;
+        $user = app('firebase.auth')->verifyIdToken($idTokenString);
+        dd($user);
         // $user = User::where('provider_id', $request->provider_id)->first();
         // $user = User::where('email', $request->email)->first();
         // // $password = 'password123';
