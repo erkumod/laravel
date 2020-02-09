@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Profile;
 use App\Role;
+use App\Brand;
+use App\Carmodel;
 use App\MyCar;
 use App\OTP;
 use App\WasherDetails;
@@ -141,7 +143,12 @@ class UserController extends Controller
             $user->name = $userdata->name;
             $user->email = $userdata->email;
             $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
-            // dd($userProfileData);
+            $car_brand_id = $userProfileData->PrimaryCar->car_brand;
+            $car_model_id = $userProfileData->PrimaryCar->car_model;
+            // dump($car_model_id);
+            // dd($car_model_id);
+            $userProfileData['PrimaryCar']->car_brand_name = Brand::where('id',$car_brand_id)->first();
+            $userProfileData['PrimaryCar']->car_model_name = Carmodel::where('id',$car_model_id)->first();
             $user->dob="";
             $user->gender="";
             $user->mobile = $userdata->mobile;
@@ -158,6 +165,8 @@ class UserController extends Controller
                 $user->gender = $userProfileData->gender;
                 $user->profile_pic = $userProfileData->profile_pic;
                 $user->profession = $userProfileData->profession;
+                $userProfileData['PrimaryCar']->car_brand_name = $userProfileData['PrimaryCar']->car_brand_name ? $userProfileData['PrimaryCar']->car_brand_name->brand_name : '';
+                $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_brand_name ? $userProfileData['PrimaryCar']->car_model_name->model_name : '';
                 $user->primary_car = $userProfileData->PrimaryCar;
                 $user->primary_card = $userProfileData->PrimaryCard;
             }
@@ -190,8 +199,7 @@ class UserController extends Controller
                 $path = public_path();
                 $filename = '/profile_pic'.$id."/".time() . '.' . $profile_pic->getClientOriginalExtension();
                 Image::make($profile_pic)->resize(300, 300)->save(public_path($filename));
-     
-                
+
             }
             $profile = Profile::where('user_id', $id)->first();
             if ($profile){
@@ -199,24 +207,22 @@ class UserController extends Controller
                     $filename = $profile->profile_pic;
                 }
                 $userProfileData = Profile::where('user_id', $id)->
-                                        update([
-                                                'dob' => $request->dob,
-                                                'gender' => $request->gender,
-                                                'profile_pic' => $filename,
-                                                'profession' => $request->profession
-                                            ]);
-           }
-           else 
-                $userProfileData = Profile::where('user_id', $id)->
-                                        insert([
-                                                'dob' => $request->dob,
-                                                'user_id' => $request->user()->id,
-                                                'gender' => $request->gender,
-                                                'profession' => $request->profession
-                                            ]);
-            
+                update([
+                    'dob' => $request->dob,
+                    'gender' => $request->gender,
+                    'profile_pic' => $filename,
+                    'profession' => $request->profession
+                ]);
+           } else{
+               $userProfileData = Profile::where('user_id', $id)->
+                insert([
+                    'dob' => $request->dob,
+                    'user_id' => $request->user()->id,
+                    'gender' => $request->gender,
+                    'profession' => $request->profession
+                ]);
+            }
 
-           
            if ($userdata && $userProfileData){
                 $response = new StdClass;
                 $response->id = $id;

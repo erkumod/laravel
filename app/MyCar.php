@@ -10,8 +10,5 @@ class MyCar extends Model
   protected $guarded = [ 'id' ];
 
   protected $hidden = [];
-    public function selectedOptions()
-  {
-      return $this->belongsToMany('App\Models\GlobalOption','global_question_option','question_id','option_id')->wherePivot('deleted_at','=',null);
-  }
+
 }
