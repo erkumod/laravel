@@ -68,24 +68,24 @@ class AuthApiController extends Controller
             'password' => $request->password
             ], $rules);
         if($validator->fails()) {
-            return response()->json(['success'=> true, 'error'=> "Please validate before sending"],401);
+            return response()->json(['success'=> false, 'error'=> "Please validate before sending"],200);
         }
         $user = User::where('email', $request->email)->first();
         try {
             // attempt to verify the credentials and create a token for the user
             if($user && $user->provider == null && !$user->email_verified_at){
                 $user->sendEmailVerificationNotification();
-                return response()->json(['success' => true, 'error' => 'Please verify your email first'], 401);
+                return response()->json(['success' => false, 'error' => 'Please verify your email first'], 200);
             }
             if (!$token = JWTAuth::attempt([
                     'email' => $request->email,
                     'password' => $request->password
                 ])) {
-                return response()->json(['success' => true, 'error' => 'We cant find an account with this credentials.'], 401);
+                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['success' => true, 'error' => 'Failed to login, please try again.'], 500);
+            return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 200);
         }
         // all good so return the token
        
@@ -113,7 +113,7 @@ class AuthApiController extends Controller
         //     $user->update();
 
         //     if (!$token = JWTAuth::fromUser($user)) {
-        //         return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 401);
+        //         return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 200);
         //     }
         //     else{
         //         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);        
@@ -158,13 +158,13 @@ class AuthApiController extends Controller
                                         'email' => $request->email,
                                         'password' => $password
                                         ])) {
-                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
+                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
             }
             else{
                 return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
             }
             
-            return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
+            return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
         }        
         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
         // }
@@ -183,7 +183,7 @@ class AuthApiController extends Controller
             return response()->json(['success' => true, 'message'=> "You have successfully logged out."]);
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
+            return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 200);
         }
     }
 
@@ -193,7 +193,7 @@ class AuthApiController extends Controller
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             $error_message = "Your email address was not found.";
-            return response()->json(['success' => false, 'error' => ['email'=> $error_message]], 401);
+            return response()->json(['success' => false, 'error' => ['email'=> $error_message]], 200);
         }
         try {
             $user->remember_token = '123456';
@@ -204,7 +204,7 @@ class AuthApiController extends Controller
         } catch (\Exception $e) {
             //Return with error
             $error_message = $e->getMessage();
-            return response()->json(['success' => false, 'error' => $error_message], 401);
+            return response()->json(['success' => false, 'error' => $error_message], 200);
         }
         return response()->json([
             'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
