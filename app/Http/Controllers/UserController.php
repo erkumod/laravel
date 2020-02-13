@@ -143,12 +143,16 @@ class UserController extends Controller
             $user->name = $userdata->name;
             $user->email = $userdata->email;
             $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
-            $car_brand_id = $userProfileData->PrimaryCar->car_brand;
-            $car_model_id = $userProfileData->PrimaryCar->car_model;
+            $car_brand_id = '';
+            $car_model_id = '';
+            if($userProfileData){
+                $car_brand_id = $userProfileData->PrimaryCar ? $userProfileData->PrimaryCar->car_brand : '';
+                $car_model_id = $userProfileData->PrimaryCar ? $userProfileData->PrimaryCar->car_model : '';
+            }
             // dump($car_model_id);
             // dd($car_model_id);
-            $userProfileData['PrimaryCar']->car_brand_name = Brand::where('id',$car_brand_id)->first();
-            $userProfileData['PrimaryCar']->car_model_name = Carmodel::where('id',$car_model_id)->first();
+            $brand = Brand::where('id',$car_brand_id)->first();
+            $model = Carmodel::where('id',$car_model_id)->first();
             $user->dob="";
             $user->gender="";
             $user->mobile = $userdata->mobile;
@@ -159,18 +163,26 @@ class UserController extends Controller
             $user->mobile_verification = $userdata->mobile_verification;
             
             
-
+            
             if ($userProfileData){
+                if($userProfileData['PrimaryCar']){
+                    $userProfileData['PrimaryCar']->car_brand_name = $brand ? $brand->brand_name : '';
+                    $userProfileData['PrimaryCar']->car_model_name = $model ? $model->model_name : '';
+                    $userProfileData['PrimaryCar']->car_brand_name = $userProfileData['PrimaryCar']->car_brand_name;
+                    $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_brand_name;
+                }
                 $user->dob = $userProfileData->dob;
                 $user->gender = $userProfileData->gender;
                 $user->profile_pic = $userProfileData->profile_pic;
                 $user->profession = $userProfileData->profession;
-                $userProfileData['PrimaryCar']->car_brand_name = $userProfileData['PrimaryCar']->car_brand_name ? $userProfileData['PrimaryCar']->car_brand_name->brand_name : '';
-                $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_brand_name ? $userProfileData['PrimaryCar']->car_model_name->model_name : '';
                 $user->primary_car = $userProfileData->PrimaryCar;
                 $user->primary_card = $userProfileData->PrimaryCard;
+            }else{
+                $user->primary_car =  null;
+                $user->primary_card = null;
+
             }
-            if (isset($user->profile_pic) || $user->profile_pic == null)
+            if (isset($user->profile_pic) || $user->profile_pic == '')
                 $user->profile_pic="/profile_pic/profile.png";
             $data->profile = $user;
             $data->status = 200;
@@ -705,9 +717,11 @@ class UserController extends Controller
 				$primaryCar = MyCar::where([
                     ['user_id', '=', $user_id],
                     ['primary', '!=', true]
-				])->orderBy('id')->first();
-				$primaryCar->primary = true;
-				$primaryCar->save();
+                ])->orderBy('id')->first();
+                if($primaryCar){
+                    $primaryCar->primary = true;
+                    $primaryCar->save();
+                }
 			}
 			$mycar = $mycar->delete();
 		}

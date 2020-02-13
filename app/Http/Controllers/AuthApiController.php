@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Profile;
 use App\OTP;
 use JWTFactory;
 use JWTAuth;
@@ -44,7 +45,7 @@ class AuthApiController extends Controller
         $mobile = $request->mobile;
         $email_token = base64_encode($request->email);
         $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
-
+        $profile = Profile::create(['user_id' => $user->id,'dob' => $request->dob,'gender' => $request->gender, 'profession' => $request->profession]);
         $user->sendEmailVerificationNotification();
         return response()->json(['success' => true, 'error' => 'Successfully registerd,Please verify your email and then try to login'], 200);
         // return $this->login($request);
@@ -67,24 +68,24 @@ class AuthApiController extends Controller
             'password' => $request->password
             ], $rules);
         if($validator->fails()) {
-            return response()->json(['success'=> false, 'error'=> "Please validate before sending"]);
+            return response()->json(['success'=> true, 'error'=> "Please validate before sending"],401);
         }
         $user = User::where('email', $request->email)->first();
         try {
             // attempt to verify the credentials and create a token for the user
             if($user && $user->provider == null && !$user->email_verified_at){
                 $user->sendEmailVerificationNotification();
-                return response()->json(['success' => false, 'error' => 'Please verify your email first'], 401);
+                return response()->json(['success' => true, 'error' => 'Please verify your email first'], 401);
             }
             if (!$token = JWTAuth::attempt([
                     'email' => $request->email,
                     'password' => $request->password
                 ])) {
-                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
+                return response()->json(['success' => true, 'error' => 'We cant find an account with this credentials.'], 401);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
+            return response()->json(['success' => true, 'error' => 'Failed to login, please try again.'], 500);
         }
         // all good so return the token
        

@@ -170,17 +170,19 @@ class PaymentCardController extends Controller
                     ['user_id', '=', $user_id],
                     ['primary', '!=', true]
 				])->orderBy('id')->first();
-				$primaryCard->primary = true;
-				$primaryCard->save();
+				if($primaryCard){
+					$primaryCard->primary = true;
+					$primaryCard->save();
+				}
 			}
 			$mycard = $mycard->delete();
 		}
 
 
 	    if ($mycard){
-	            $response->mycard = $mycard;
-	            $status = 200;
-	            $message = "Car information deleted Successfully";
+			$response->mycard = $mycard;
+			$status = 200;
+			$message = "Card information deleted Successfully";
 
 	    }   
 

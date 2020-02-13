@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     //
+    protected $primaryKey = "id";
+    protected $guarded = [ 'id' ];
+
+    protected $hidden = [];
 
     public function PrimaryCar()
     {
