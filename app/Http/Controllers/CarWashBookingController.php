@@ -142,7 +142,6 @@ class CarWashBookingController extends Controller
     $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->get();
     $mylist = array();;
     $mylist = array();
-
     foreach ($mybooking as $key => $value) {
         if ($value->status == 'Pending' || $value->status == 'Accepted'){
             $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
