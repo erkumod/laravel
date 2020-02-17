@@ -25,6 +25,9 @@ class AddColorCodeMyCars extends Migration
      */
     public function down()
     {
-        $table->dropColumn('color_code');
+        Schema::table('my_cars', function (Blueprint $table) {
+            $table->dropColumn('color_code');
+        });
+
     }
 }

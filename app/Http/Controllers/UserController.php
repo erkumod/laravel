@@ -614,6 +614,7 @@ class UserController extends Controller
             $mycar->status        = $request->status;        
             $mycar->vehicle_no      = $request->vehicle_no;
             $mycar->color_name      = $request->color_name;
+            $mycar->color_code     = $request->color_code;
 
             $car = MyCar::where([
                 ['user_id', '=', $user_id],
