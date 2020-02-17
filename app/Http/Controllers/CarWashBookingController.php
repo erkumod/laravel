@@ -149,6 +149,7 @@ class CarWashBookingController extends Controller
                 $value->brand_name = $vehicle->brand_name;
                 $value->car_image = $vehicle->car_image;
                 $value->model_name = $vehicle->model_name;
+                $value->type = $vehicle->type ;
                 array_push($mylist, $value);
             }
         }
