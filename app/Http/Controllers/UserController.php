@@ -552,6 +552,7 @@ class UserController extends Controller
             "status"        => $request->status,
             "vehicle_no"    => $request->vehicle_no,
             "color_name"    => $request->color_name,
+            "color_code"    => $request->color_code,
         );
 
         $car = MyCar::where([
