@@ -37,7 +37,8 @@ class WasherController extends Controller
         $message = "User not registered as washer.";
         // $wash = CarWashBooking::where('status', 'Accepted')->where('accepted_by', '0')->first();
         $wash = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')
-                                ->select('users.name as user_name','car_wash_bookings.*')
+                                ->join('carmodels','carmodels.id','my_cars.car_model')
+                                ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
                                 ->where('status', 'Accepted')->where('accepted_by', '0')->first();
         if ($wash){
             $message = "No Wash available";
