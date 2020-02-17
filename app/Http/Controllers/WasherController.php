@@ -69,7 +69,7 @@ class WasherController extends Controller
 
         $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
                                 ->join('carmodels','carmodels.id','my_cars.car_model')
-                                ->select('users.name as user_name','car_wash_bookings.*','my_cars.*')
+                                ->select('users.name as user_name','car_wash_bookings.*','my_cars.*','carmodels.*')
                                 ->where('accepted_by', $request->user()->id)->get();
         // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
