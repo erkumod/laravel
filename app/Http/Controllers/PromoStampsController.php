@@ -57,7 +57,6 @@ class PromoStampsController extends Controller
             if($stamp->type == "Mini3" &&  $stamp->isValid == 'valid'){
                 $data['reward_value'] = 3;
                 $profile = Profile::where('user_id',$request->user()->id)->first();
-                $profile->unrewarded_booking =  $profile->unrewarded_booking - 4;
                 $profile->save();
             }elseif($stamp->type == "Mini7" &&  $stamp->isValid == 'valid'){
                 $data['reward_value'] = 7;
