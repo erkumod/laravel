@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\CarWashBooking;
 use App\MyCar;
 use App\PaymentCard;
+use App\PromoCode;
+use App\Profile;
 use StdClass;
 use Validator;
 use Carbon\Carbon;
@@ -68,13 +70,21 @@ class CarWashBookingController extends Controller
         $mybooking->lot_no        = $request->lot_no;        
         $mybooking->fare        = $request->fare;        
         $mybooking->payment_type        = $request->payment_type; 
-        $mybooking->notes        = $notes; 
+        $mybooking->notes        = $notes;
+        $mybooking->isPromo        = false;
+        if(!$request->promo){
+            $mybooking->isPromo        = true;
+            $profile = Profile::where('user_id',$user_id)->first();
+            $profile->unrewarded_booking += 1;
+            $profile->total_booking += 1;
+            $profile->save();
+        }
         $mybooking->save();
         if ($mybooking){
             $response->mybooking = $mybooking;
             $status = 200;
             $message = "Car wash booking saved Successfully";
-        }   
+        }
 
         $response->status = $status;
         $response->message = $message;
@@ -91,11 +101,23 @@ class CarWashBookingController extends Controller
 
         $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
         if ($mybooking){
+            if($mybooking->status == 'Accepted' || $mybooking->status == 'Started' ){
+                $message = "Car wash booking can not cancel";
+                $response->status = '';
+                $response->message = $message;
+                return response()->json($response);   
+            }
             $mybooking->status      = 'Cancelled';
             $mybooking->update();
             $status = 200;
             $message = "Car wash booking cancelled successfully";
-        }   
+            if($mybooking->isPromo == true){
+                $profile = Profile::where('user_id',$washes->user_id)->first();
+                $profile->unrewarded_booking -= 1;
+                $profile->total_booking -= 1;
+                $profile->save();
+            }
+        }
 
         $response->status = $status;
         $response->message = $message;

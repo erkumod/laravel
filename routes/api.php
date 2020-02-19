@@ -132,4 +132,9 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::get('book_car_wash_list', 'CarWashBookingController@viewMyCarWashBooking');
 	Route::get('scheduled_car_wash_list', 'CarWashBookingController@viewMyCarWashScheduleBooking');
 	Route::post('cancel_car_wash', 'CarWashBookingController@cancelcarwashbooking');
+	Route::get('redeemStamp', 'PromoStampsController@redeemStamp');
+	Route::post('redeemPromo', 'PromoStampsController@redeemPromo');
+	Route::post('irredeemPromo', 'PromoStampsController@iredeemPromo');
+	Route::get('promoList', 'PromoStampsController@promoList');
+	Route::get('promoHistory', 'PromoStampsController@promoHistory');
 });

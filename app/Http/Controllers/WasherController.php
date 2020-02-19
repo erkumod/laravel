@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 use App\WasherDetails;
 use App\CarWashBooking;
+use App\PromoStamps;
 use App\Profile;
 use App\MyCar;
 use StdClass;
@@ -165,8 +168,21 @@ class WasherController extends Controller
             $washes->status = 'Completed';
             $washes->update(); 
             $response->accepted_wash = $washes;
+            $profile = Profile::where('user_id',$washes->user_id)->first();
+            if($profile->unrewarded_booking == 8){
+                $data = array('type'=>"Mini7");
+                $data['user_id'] = $request->user()->id;
+                $data['code'] = Str::random(8);
+                $data['type'] = 'valid';
+                $data['expired_at'] =  Carbon::now()->addMonths(6);
+                $stamp = PromoStamps::create($data);
+                $profile->unrewarded_booking = 0;
+                $profile->save();
+            }
+
+            $profile->save();
             $status = 200;
-            $message = "Accepted successfully";
+            $message = "Completed successfully";
 
         }
         $response->status = $status;
