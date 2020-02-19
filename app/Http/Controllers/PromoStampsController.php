@@ -56,8 +56,6 @@ class PromoStampsController extends Controller
             $data['code'] = $stamp ? $stamp->code : ''; 
             if($stamp->type == "Mini3" &&  $stamp->isValid == 'valid'){
                 $data['reward_value'] = 3;
-                $profile = Profile::where('user_id',$request->user()->id)->first();
-                $profile->save();
             }elseif($stamp->type == "Mini7" &&  $stamp->isValid == 'valid'){
                 $data['reward_value'] = 7;
             }
