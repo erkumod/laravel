@@ -72,7 +72,7 @@ class CarWashBookingController extends Controller
         $mybooking->payment_type        = $request->payment_type; 
         $mybooking->notes        = $notes;
         $mybooking->isPromo        = false;
-        if(!$request->promo){
+        if(!is_null($request->promo)){
             $mybooking->isPromo        = true;
             $profile = Profile::where('user_id',$user_id)->first();
             $profile->unrewarded_booking += 1;
