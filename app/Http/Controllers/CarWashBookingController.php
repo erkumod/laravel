@@ -179,7 +179,7 @@ class CarWashBookingController extends Controller
     if ($mybooking){
         $status = 200;
         $message = 'Data Processed';
-        $response->my_booking = $mylist;
+        $response->my_booking = $mybooking;
     }
     $response->status = $status;
     $response->message = $message;
