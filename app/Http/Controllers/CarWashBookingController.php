@@ -16,6 +16,8 @@ class CarWashBookingController extends Controller
 {
     public function addcarwashbooking(Request $request){
         $user_id = $request->user()->id;
+        \Log::info("This is a message from a controller");
+        \Log::info(print_r($request->toArray(), true));
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong!!!";
@@ -162,8 +164,7 @@ class CarWashBookingController extends Controller
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
     $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->get();
-    $mylist = array();;
-    $mylist = array();
+    // $mylist = array();
     foreach ($mybooking as $key => $value) {
         if ($value->status == 'Pending' || $value->status == 'Accepted'){
             $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
@@ -172,7 +173,7 @@ class CarWashBookingController extends Controller
                 $value->car_image = $vehicle->car_image;
                 $value->model_name = $vehicle->model_name;
                 $value->type = $vehicle->type ;
-                array_push($mylist, $value);
+                // array_push($mylist, $value);
             }
         }
     }
