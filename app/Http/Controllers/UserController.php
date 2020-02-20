@@ -186,8 +186,9 @@ class UserController extends Controller
                 $user->primary_card = null;
 
             }
-            if (isset($user->profile_pic) || $user->profile_pic == '')
+            if (!isset($user->profile_pic) || $user->profile_pic == ''){
                 $user->profile_pic="/profile_pic/profile.png";
+            }
             $data->profile = $user;
             $data->status = 200;
         }
