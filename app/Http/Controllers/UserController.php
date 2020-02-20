@@ -143,6 +143,10 @@ class UserController extends Controller
             $user->name = $userdata->name;
             $user->email = $userdata->email;
             $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
+            if(is_null($userProfileData)){
+                $profile = Profile::create(['user_id' => $id,'dob' => $request->dob,'gender' => $request->gender, 'profession' => $request->profession]);
+                $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
+            }
             $car_brand_id = '';
             $car_model_id = '';
             if($userProfileData){
