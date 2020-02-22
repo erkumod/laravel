@@ -56,12 +56,12 @@
                         				],Input::old('car_category'),['class'=>'form-control'] ) }}
                     </div>
                 </div>
-                {{-- <div class="form-group">
+                <div class="form-group">
                     {!! Form::label('title','Car Model :',['class'=>'col-sm-3 control-label'])!!}
                     <div class="col-sm-6">
                         {!! Form::text('car_model',Input::old('car_model'),['class'=>'form-control'])!!}
                     </div>
-                </div> --}}
+                </div>
                 <div class="form-group">
                     {!! Form::label('title','Description :',['class'=>'col-sm-3 control-label'])!!}
                     <div class="col-sm-6">

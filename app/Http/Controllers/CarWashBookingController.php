@@ -103,11 +103,11 @@ class CarWashBookingController extends Controller
 
         $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
         if ($mybooking){
-            if($mybooking->status == 'Accepted' || $mybooking->status == 'Started' ){
+            if($mybooking->status == 'Started' ){
                 $message = "Car wash booking can not cancel";
                 $response->status = '';
                 $response->message = $message;
-                return response()->json($response);   
+                return response()->json($response);
             }
             $mybooking->status      = 'Cancelled';
             $mybooking->update();
