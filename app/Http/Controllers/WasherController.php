@@ -77,6 +77,7 @@ class WasherController extends Controller
         $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
                                 ->join('carmodels','carmodels.id','my_cars.car_model')
                                 ->select('users.name as user_name','my_cars.*','carmodels.*','car_wash_bookings.*')
+                                // ->where('car_wash_bookings.status','Accepted')
                                 ->where('accepted_by', $request->user()->id)->get();
         // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
@@ -205,7 +206,7 @@ class WasherController extends Controller
             $washes->update(); 
             $response->accepted_wash = $washes;
             $status = 200;
-            $message = "Accepted successfully";
+            $message = "Cancled successfully";
 
         }
         $response->status = $status;

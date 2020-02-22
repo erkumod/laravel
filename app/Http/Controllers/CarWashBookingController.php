@@ -18,6 +18,7 @@ class CarWashBookingController extends Controller
         $user_id = $request->user()->id;
         \Log::info("This is a message from a controller");
         \Log::info(print_r($request->toArray(), true));
+        \Log::info($user_id);
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong!!!";
@@ -52,14 +53,10 @@ class CarWashBookingController extends Controller
         if ($request->notes!=null){
             $notes = $request->notes;
         }
-        // $vehicle = MyCar::where([
-        //     ['user_id', '=', $user_id],
-        //     ['primary', '=', true]
-        // ])->first();
-        // $card = PaymentCard::where([
-        //     ['user_id', '=', $user_id],
-        //     ['primary', '=', true]
-        // ])->first();
+        $card = PaymentCard::where([
+            ['user_id', '=', $user_id],
+            ['id', '=', $request->card_id]
+        ])->first();
         // dd($vehicle);
         $mybooking = new CarWashBooking;
         $mybooking->location      = $request->location;
@@ -74,6 +71,19 @@ class CarWashBookingController extends Controller
         $mybooking->payment_type        = $request->payment_type; 
         $mybooking->notes        = $notes;
         $mybooking->isPromo        = false;
+        // $mybooking->user_name = $request->user()->name;
+        $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $request->vehicle_id)->first();
+        $mybooking->model_name = $vehicle->model_name;
+        $mybooking->brand_name = $vehicle->brand_name;
+        $mybooking->vehicle_no = $vehicle->vehicle_no;
+        $mybooking->brand_img = $vehicle->brand_img;
+        $mybooking->car_image = $vehicle->car_image;
+        $mybooking->brand_id = $vehicle->brand_id;
+        $mybooking->model_img = $vehicle->model_img;
+        $mybooking->model_desc = $vehicle->model_desc;
+        $mybooking->color_code = $vehicle->color_code;
+        $mybooking->color_name = $vehicle->color_name;
+        $mybooking->type = $vehicle->type;
         if(!is_null($request->promo)){
             $mybooking->isPromo        = true;
             $profile = Profile::where('user_id',$user_id)->first();
@@ -103,8 +113,8 @@ class CarWashBookingController extends Controller
 
         $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
         if ($mybooking){
-            if($mybooking->status == 'Started' ){
-                $message = "Car wash booking can not cancel";
+            if($mybooking->status == 'Started' || $mybooking->status == 'Cancelled'){
+                $message = "Car wash booking can not cancel Or already cancled";
                 $response->status = '';
                 $response->message = $message;
                 return response()->json($response);
@@ -114,7 +124,7 @@ class CarWashBookingController extends Controller
             $status = 200;
             $message = "Car wash booking cancelled successfully";
             if($mybooking->isPromo == true){
-                $profile = Profile::where('user_id',$washes->user_id)->first();
+                $profile = Profile::where('user_id',$user_id)->first();
                 $profile->unrewarded_booking -= 1;
                 $profile->total_booking -= 1;
                 $profile->save();
@@ -132,24 +142,24 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no')->where('car_wash_bookings.user_id', $user_id)->get();
-    $mylist = array();
-    foreach ($mybooking as $key => $value) {
-        if ($value->status == 'Completed' || $value->status == 'Cancelled'){
-            $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
+    $mybooking = CarWashBooking::leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no')->where('car_wash_bookings.user_id', $user_id)->whereNotIn('car_wash_bookings.status', ['Completed','Cancelled'])->get();
+    // $mylist = array();
+    // foreach ($mybooking as $key => $value) {
+    //     if ($value->status == 'Completed' || $value->status == 'Cancelled'){
+    //         $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
 
-            if ($vehicle){
-                $value->brand_name = $vehicle->brand_name;
-                $value->car_image = $vehicle->car_image;
-                $value->model_name = $vehicle->model_name;
-                array_push($mylist, $value);
-            }
-        }
-    }
+    //         if ($vehicle){
+    //             $value->brand_name = $vehicle->brand_name;
+    //             $value->car_image = $vehicle->car_image;
+    //             $value->model_name = $vehicle->model_name;
+    //             array_push($mylist, $value);
+    //         }
+    //     }
+    // }
     if ($mybooking){
         $status = 200;
         $message = 'Data Processed';
-        $response->my_booking = $mylist;
+        $response->my_booking = $mybooking;
     }
     $response->status = $status;
     $response->message = $message;
@@ -163,20 +173,20 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->orderBy('id','DESC')->get();
+    $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->whereNotIn('car_wash_bookings.status', ['Pending','Accepted'])->orderBy('id','DESC')->get();
     // $mylist = array();
-    foreach ($mybooking as $key => $value) {
-        if ($value->status == 'Pending' || $value->status == 'Accepted'){
-            $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
-            if ($vehicle){
-                $value->brand_name = $vehicle->brand_name;
-                $value->car_image = $vehicle->car_image;
-                $value->model_name = $vehicle->model_name;
-                $value->type = $vehicle->type ;
-                // array_push($mylist, $value);
-            }
-        }
-    }
+    // foreach ($mybooking as $key => $value) {
+    //     if ($value->status == 'Pending' || $value->status == 'Accepted'){
+    //         $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $value->vehicle_id)->first();
+    //         if ($vehicle){
+    //             $value->brand_name = $vehicle->brand_name;
+    //             $value->car_image = $vehicle->car_image;
+    //             $value->model_name = $vehicle->model_name;
+    //             $value->type = $vehicle->type ;
+    //             // array_push($mylist, $value);
+    //         }
+    //     }
+    // }
     if ($mybooking){
         $status = 200;
         $message = 'Data Processed';
