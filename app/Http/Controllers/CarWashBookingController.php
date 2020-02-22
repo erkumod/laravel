@@ -71,25 +71,33 @@ class CarWashBookingController extends Controller
         $mybooking->payment_type        = $request->payment_type; 
         $mybooking->notes        = $notes;
         $mybooking->isPromo        = false;
-        // $mybooking->user_name = $request->user()->name;
+        if(!is_null($card)){
+            $mybooking->card_no        = $card->card_no;
+            $mybooking->card_type        = $card->card_type;
+        }
+        $mybooking->user_name = $request->user()->name;
         $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $request->vehicle_id)->first();
-        $mybooking->model_name = $vehicle->model_name;
-        $mybooking->brand_name = $vehicle->brand_name;
-        $mybooking->vehicle_no = $vehicle->vehicle_no;
-        $mybooking->brand_img = $vehicle->brand_img;
-        $mybooking->car_image = $vehicle->car_image;
-        $mybooking->brand_id = $vehicle->brand_id;
-        $mybooking->model_img = $vehicle->model_img;
-        $mybooking->model_desc = $vehicle->model_desc;
-        $mybooking->color_code = $vehicle->color_code;
-        $mybooking->color_name = $vehicle->color_name;
-        $mybooking->type = $vehicle->type;
+        if(!is_null($vehicle)){
+            $mybooking->model_name = $vehicle->model_name;
+            $mybooking->brand_name = $vehicle->brand_name;
+            $mybooking->vehicle_no = $vehicle->vehicle_no;
+            $mybooking->brand_img = $vehicle->brand_img;
+            $mybooking->car_image = $vehicle->car_image;
+            $mybooking->brand_id = $vehicle->brand_id;
+            $mybooking->model_img = $vehicle->model_img;
+            $mybooking->model_desc = $vehicle->model_desc;
+            $mybooking->color_code = $vehicle->color_code;
+            $mybooking->color_name = $vehicle->color_name;
+            $mybooking->type = $vehicle->type;
+        }
         if(!is_null($request->promo)){
             $mybooking->isPromo        = true;
             $profile = Profile::where('user_id',$user_id)->first();
-            $profile->unrewarded_booking += 1;
-            $profile->total_booking += 1;
-            $profile->save();
+            if($profile){
+                $profile->unrewarded_booking += 1;
+                $profile->total_booking += 1;
+                $profile->save();
+            }
         }
         $mybooking->save();
         if ($mybooking){
@@ -142,7 +150,11 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no')->where('car_wash_bookings.user_id', $user_id)->whereNotIn('car_wash_bookings.status', ['Completed','Cancelled'])->get();
+    $mybooking = CarWashBooking::
+    // leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
+    // ->select('car_wash_bookings.*', 'payment_cards.card_no')
+    where('car_wash_bookings.user_id', $user_id)
+    ->whereIn('car_wash_bookings.status', ['Completed','Cancelled'])->get();
     // $mylist = array();
     // foreach ($mybooking as $key => $value) {
     //     if ($value->status == 'Completed' || $value->status == 'Cancelled'){
@@ -173,7 +185,13 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')->where('car_wash_bookings.user_id', $user_id)->whereNotIn('car_wash_bookings.status', ['Pending','Accepted'])->orderBy('id','DESC')->get();
+    $mybooking = CarWashBooking::
+    // join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
+    // ->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')
+    where('car_wash_bookings.user_id', $user_id)
+    ->whereIn('car_wash_bookings.status', ['Pending','Accepted'])
+    ->orderBy('id','DESC')
+    ->get();
     // $mylist = array();
     // foreach ($mybooking as $key => $value) {
     //     if ($value->status == 'Pending' || $value->status == 'Accepted'){
