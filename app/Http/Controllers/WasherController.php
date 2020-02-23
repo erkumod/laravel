@@ -11,6 +11,7 @@ use App\PromoStamps;
 use App\Profile;
 use App\MyCar;
 use StdClass;
+use Config;
 
 class WasherController extends Controller
 {
@@ -50,43 +51,17 @@ class WasherController extends Controller
             $message = "No Wash available";
         }
         else{
+            Config::set('lat', $request->lat);
+            Config::set('lon', $request->lon);
             // $washes = CarWashBooking::where('status', 'Pending')->where('accepted_by', '0')->get();
             $washes = CarWashBooking::
-                                    // join('users', 'users.id', '=', 'car_wash_bookings.user_id')
-                                    // ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
-                                    // ->join('carmodels','carmodels.id','my_cars.car_model')
-                                    // ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
-                                    // ->
-                                    where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->orderBy('updated_at','desc')->get();
+            where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->orderBy('updated_at','desc')->get();
+            // join('users', 'users.id', '=', 'car_wash_bookings.user_id')
+            // ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
+            // ->join('carmodels','carmodels.id','my_cars.car_model')
+            // ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
+            // ->
             if ($washes){
-                foreach ($washes as $i => $wash) {
-                    $unit = "K";
-                    $lat1 = $wash->lat;
-                    $lat2 = $request->lat;
-                    $lon1 = $wash->lon;
-                    $lon2 = $request->lon;
-                    if(empty($wash->lat) && empty($wash->lon)){
-                        $wash->distance = 0;
-                    }elseif (($lat1 == $lat2) && ($lon1 == $lon2)) {
-                        $wash->distance = 0;
-                    }
-                    else {
-                        $theta = $lon1 - $lon2;
-                        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-                        $dist = acos($dist);
-                        $dist = rad2deg($dist);
-                        $miles = $dist * 60 * 1.1515;
-                        $unit = strtoupper($unit);
-
-                        if ($unit == "K") {
-                            $wash->distance = ($miles * 1.609344);
-                        } else if ($unit == "N") {
-                        $wash->distance =  ($miles * 0.8684);
-                        } else {
-                        $wash->distance =  $miles;
-                        }
-                    }
-                }
                 $response->request_wash = $washes;
                 $status = 200;
                 $message = "Result fetched successfully";
@@ -105,42 +80,17 @@ class WasherController extends Controller
         $response = new StdClass;
         $status = 200;
         $message = "User not registered as washer.";
-
-        $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
-                                ->join('carmodels','carmodels.id','my_cars.car_model')
-                                ->select('users.name as user_name','my_cars.*','carmodels.*','car_wash_bookings.*')
-                                // ->where('car_wash_bookings.status','Accepted')
-                                ->where('accepted_by', $request->user()->id)->orderBy('updated_at','desc')->get();
+        Config::set('lat', $request->lat);
+        Config::set('lon', $request->lon);
+        $washes = CarWashBooking::
+        where('accepted_by', $request->user()->id)->orderBy('updated_at','desc')->get();
+        // join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
+        // ->join('carmodels','carmodels.id','my_cars.car_model')
+        // ->select('users.name as user_name','my_cars.*','carmodels.*','car_wash_bookings.*')
+        // ->where('car_wash_bookings.status','Accepted')
+        // ->
         // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
-            foreach ($washes as $i => $wash) {
-                $unit = "K";
-                $lat1 = $wash->lat;
-                $lat2 = $request->lat;
-                $lon1 = $wash->lon;
-                $lon2 = $request->lon;
-                if(empty($wash->lat) && empty($wash->lon)){
-                    $wash->distance = 0;
-                }elseif (($lat1 == $lat2) && ($lon1 == $lon2)) {
-                    $wash->distance = 0;
-                }
-                else {
-                    $theta = $lon1 - $lon2;
-                    $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-                    $dist = acos($dist);
-                    $dist = rad2deg($dist);
-                    $miles = $dist * 60 * 1.1515;
-                    $unit = strtoupper($unit);
-
-                    if ($unit == "K") {
-                        $wash->distance = ($miles * 1.609344);
-                    } else if ($unit == "N") {
-                    $wash->distance =  ($miles * 0.8684);
-                    } else {
-                    $wash->distance =  $miles;
-                    }
-                }
-            }
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Result fetched successfully";
