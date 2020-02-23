@@ -57,7 +57,7 @@ class WasherController extends Controller
                                     // ->join('carmodels','carmodels.id','my_cars.car_model')
                                     // ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
                                     // ->
-                                    where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->get();
+                                    where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->orderBy('updated_at','desc')->get();
             if ($washes){
                 foreach ($washes as $i => $wash) {
                     $unit = "K";
@@ -110,7 +110,7 @@ class WasherController extends Controller
                                 ->join('carmodels','carmodels.id','my_cars.car_model')
                                 ->select('users.name as user_name','my_cars.*','carmodels.*','car_wash_bookings.*')
                                 // ->where('car_wash_bookings.status','Accepted')
-                                ->where('accepted_by', $request->user()->id)->get();
+                                ->where('accepted_by', $request->user()->id)->orderBy('updated_at','desc')->get();
         // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
             foreach ($washes as $i => $wash) {
