@@ -49,11 +49,13 @@ class WasherController extends Controller
         }
         else{
             // $washes = CarWashBooking::where('status', 'Pending')->where('accepted_by', '0')->get();
-            $washes = CarWashBooking::join('users', 'users.id', '=', 'car_wash_bookings.user_id')
-                                    ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
-                                    ->join('carmodels','carmodels.id','my_cars.car_model')
-                                    ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
-                                    ->where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->get();
+            $washes = CarWashBooking::
+                                    // join('users', 'users.id', '=', 'car_wash_bookings.user_id')
+                                    // ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
+                                    // ->join('carmodels','carmodels.id','my_cars.car_model')
+                                    // ->select('users.name as user_name','car_wash_bookings.*','carmodels.*')
+                                    // ->
+                                    where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->get();
             if ($washes){
                 $response->request_wash = $washes;
                 $status = 200;
