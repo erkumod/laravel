@@ -565,6 +565,10 @@ class UserController extends Controller
 			['primary', '=', true]
         ])->get();
 
+        $hasCar = MyCar::where([
+			['user_id', '=', $user_id]
+        ])->get();
+
         $dataArr['primary'] = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
 
 		if($car && count($car) > 0 && $dataArr['primary'] == true){
@@ -573,6 +577,8 @@ class UserController extends Controller
 				['primary', '=', true]
 			])->update(['primary' => false]); 
 			$dataArr['primary']        = true;        
+        }elseif(count($hasCar) <= 0){
+			$dataArr['primary']        = true;
         }
 
         if($request->car_image){

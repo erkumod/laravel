@@ -33,6 +33,9 @@ class PaymentCardController extends Controller
 			['primary', '=', true]
 		])->get();
 
+		$hasCard = PaymentCard::where([
+			['user_id', '=', $user_id]
+		])->get();
 		$mycard->primary = filter_var($request->primary, FILTER_VALIDATE_BOOLEAN);
 		if($card && count($card) > 0 && $mycard->primary == true){
 			PaymentCard::where([
@@ -40,7 +43,10 @@ class PaymentCardController extends Controller
 				['primary', '=', true]
 			])->update(['primary' => false]);
 			$mycard->primary        = true;        
-		}
+		}elseif(count($hasCard) <= 0){
+			$mycard->primary        = true;
+        }
+
         $mycard->type        = $request->type;        
         $mycard->name        = $request->name;        
         $mycard->save();
