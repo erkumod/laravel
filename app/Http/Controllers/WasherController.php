@@ -59,6 +59,34 @@ class WasherController extends Controller
                                     // ->
                                     where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->get();
             if ($washes){
+                foreach ($washes as $i => $wash) {
+                    $unit = "K";
+                    $lat1 = $wash->lat;
+                    $lat2 = $request->lat;
+                    $lon1 = $wash->lon;
+                    $lon2 = $request->lon;
+                    if(empty($wash->lat) && empty($wash->lon)){
+                        $wash->distance = 0;
+                    }elseif (($lat1 == $lat2) && ($lon1 == $lon2)) {
+                        $wash->distance = 0;
+                    }
+                    else {
+                        $theta = $lon1 - $lon2;
+                        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+                        $dist = acos($dist);
+                        $dist = rad2deg($dist);
+                        $miles = $dist * 60 * 1.1515;
+                        $unit = strtoupper($unit);
+
+                        if ($unit == "K") {
+                            $wash->distance = ($miles * 1.609344);
+                        } else if ($unit == "N") {
+                        $wash->distance =  ($miles * 0.8684);
+                        } else {
+                        $wash->distance =  $miles;
+                        }
+                    }
+                }
                 $response->request_wash = $washes;
                 $status = 200;
                 $message = "Result fetched successfully";
@@ -85,6 +113,34 @@ class WasherController extends Controller
                                 ->where('accepted_by', $request->user()->id)->get();
         // $washes = CarWashBooking::where('accepted_by', $request->user()->id)->get();
         if ($washes){
+            foreach ($washes as $i => $wash) {
+                $unit = "K";
+                $lat1 = $wash->lat;
+                $lat2 = $request->lat;
+                $lon1 = $wash->lon;
+                $lon2 = $request->lon;
+                if(empty($wash->lat) && empty($wash->lon)){
+                    $wash->distance = 0;
+                }elseif (($lat1 == $lat2) && ($lon1 == $lon2)) {
+                    $wash->distance = 0;
+                }
+                else {
+                    $theta = $lon1 - $lon2;
+                    $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+                    $dist = acos($dist);
+                    $dist = rad2deg($dist);
+                    $miles = $dist * 60 * 1.1515;
+                    $unit = strtoupper($unit);
+
+                    if ($unit == "K") {
+                        $wash->distance = ($miles * 1.609344);
+                    } else if ($unit == "N") {
+                    $wash->distance =  ($miles * 0.8684);
+                    } else {
+                    $wash->distance =  $miles;
+                    }
+                }
+            }
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Result fetched successfully";

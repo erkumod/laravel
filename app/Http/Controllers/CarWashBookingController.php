@@ -69,6 +69,8 @@ class CarWashBookingController extends Controller
         $mybooking->lot_no        = $request->lot_no;        
         $mybooking->fare        = $request->fare;        
         $mybooking->payment_type        = $request->payment_type; 
+        $mybooking->lat             = $request->lat??0; 
+        $mybooking->lon             = $request->lon??0; 
         $mybooking->notes        = $notes;
         $mybooking->isPromo        = false;
         if(!is_null($card)){
