@@ -429,29 +429,60 @@ class UserController extends Controller
         $response = new StdClass;
         $status = 400;
         $message = "Something went wrong";
-         $id = $request->user()->id;
-        if($request->hasFile('profile_pic')){
-            $directoryName = '/profile_pic/'.$id;
+        $id = $request->user()->id;
+        if($request->file('profile_pic')){
+
+            $profile = Profile::where('user_id', $id)->first();
             $profile_pic = $request->file('profile_pic');
-            if(!is_dir($directoryName)){
-                //Directory does not exist, so lets create it.
-                $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
+
+            $path = public_path().'/profile_pic'.$id."/";
+            File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+
+            $filename = '/profile_pic'.$id."/".time() . '.' . $profile_pic->getClientOriginalExtension();
+            Image::make($profile_pic)->resize(300, 300)->save(public_path($filename));
+
+            if (isset($filename)){
+                $filename = $profile->profile_pic;
             }
-            $filename = $directoryName."/". time() . '.' . $profile_pic->getClientOriginalExtension();
-            Image::make($profile_pic)->resize(300, 300)->save( public_path($filename));
-            $status = 400;
+
+            if($profile){
+                $userProfileData = Profile::where('user_id', $id)->
+                update([
+                    'profile_pic' => $filename,
+                ]);
+            }else{
+                $userProfileData = Profile::where('user_id', $id)->
+                insert([
+                    'dob' => $request->dob,
+                    'user_id' => $request->user()->id,
+                    'gender' => $request->gender,
+                    'profession' => $request->profession
+                ]);
+            }
             $message = "profile pic saved";
-            $profile = Profile::where('user_id', $request->user()->id)
-                                ->update([
-                                   'profile_pic' => $filename,                                                
-                                   ]);
-                
-        }
-        else 
-        {
+            $status = 200;
+        }else{
             $status = 400;
             $message = "upload an image";
         }
+
+        // if($request->hasFile('profile_pic')){
+        //     $directoryName = '/profile_pic/'.$id;
+        //     $profile_pic = $request->file('profile_pic');
+        //     if(!is_dir($directoryName)){
+        //         //Directory does not exist, so lets create it.
+        //         $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
+        //     }
+        //     $filename = $directoryName."/". time() . '.' . $profile_pic->getClientOriginalExtension();
+        //     Image::make($profile_pic)->resize(300, 300)->save( public_path($filename));
+        //     $status = 400;
+        //     $message = "profile pic saved";
+        //     $profile = Profile::where('user_id', $request->user()->id)
+        //                         ->update([
+        //                            'profile_pic' => $filename,                                                
+        //                         ]);
+        // }
+       
         $response->status = $status;
         $response->message = $message;
 
