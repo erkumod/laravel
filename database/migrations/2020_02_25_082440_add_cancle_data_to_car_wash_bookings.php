@@ -14,8 +14,8 @@ class AddCancleDataToCarWashBookings extends Migration
     public function up()
     {
         Schema::table('car_wash_bookings', function (Blueprint $table) {
-            $table->string('cancle_message')->nullable()->default(null);
-            $table->string('cancle_image')->nullable()->default(null);
+            $table->string('cancel_message')->nullable()->default(null);
+            $table->string('cancel_image')->nullable()->default(null);
         });
     }
 
@@ -27,8 +27,8 @@ class AddCancleDataToCarWashBookings extends Migration
     public function down()
     {
         Schema::table('car_wash_bookings', function (Blueprint $table) {
-             $table->dropColumn('cancle_message');
-            $table->dropColumn('cancle_image');
+             $table->dropColumn('cancel_message');
+            $table->dropColumn('cancel_image');
         });
     }
 }

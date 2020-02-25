@@ -216,20 +216,20 @@ class WasherController extends Controller
         if ($washes){
             $washes->status = 'Pending';
             $washes->accepted_by = '0';
-            $washes->cancle_message = $request->cancle_message;
-                if($request->file('cancle_image')){
-                    $cancle_image = $request->file('cancle_image');
-                    $path = public_path().'/cancle_image/'.$request->wash_id."/";
+            $washes->cancel_message = $request->cancel_message;
+                if($request->file('cancel_image')){
+                    $cancel_image = $request->file('cancel_image');
+                    $path = public_path().'/cancel_image/'.$request->wash_id."/";
                     File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
                     $path = public_path();
-                    $filename = '/cancle_image/'.$request->wash_id."/".time() . '.' . $cancle_image->getClientOriginalExtension();
-                    Image::make($cancle_image)->resize(300, 300)->save(public_path($filename));
-                    $washes->cancle_image =$filename;
+                    $filename = '/cancel_image/'.$request->wash_id."/".time() . '.' . $cancel_image->getClientOriginalExtension();
+                    Image::make($cancel_image)->resize(300, 300)->save(public_path($filename));
+                    $washes->cancel_image =$filename;
                 }
             $washes->update(); 
             $response->accepted_wash = $washes;
             $status = 200;
-            $message = "Cancled successfully";
+            $message = "Canceld successfully";
 
         }
         $response->status = $status;
