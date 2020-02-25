@@ -202,6 +202,9 @@ class UserController extends Controller
         $data = new StdClass;
         $status = 400;
 
+        \Log::info("This is a message from a controller");
+        \Log::info(print_r($request->toArray(), true));
+        \Log::info($user_id);
         //this is a test comment 
 
         if ($id){
