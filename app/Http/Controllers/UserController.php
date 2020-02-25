@@ -426,71 +426,48 @@ class UserController extends Controller
 
     public function profilepic(Request $request)
     {
-        \Log::info("This is a message from a controller");
-        \Log::info(print_r($request->toArray(), true));
-        // \Log::info($user_id);
-        $response = new StdClass;
-        $status = 400;
-        $message = "Something went wrong";
         $id = $request->user()->id;
-        if($request->file('profile_pic')){
+        $data = new StdClass;
+        $status = 400;
 
-            $profile = Profile::where('user_id', $id)->first();
-            $profile_pic = $request->file('profile_pic');
+        // \Log::info("This is a message from a controller");
+        // \Log::info(print_r($request->toArray(), true));
+        // \Log::info($user_id);
+        //this is a test comment 
 
-            $path = public_path().'/profile_pic'.$id."/";
-            File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+        if ($id){
+            if($request->file('profile_pic')){
+                $profile_pic = $request->file('profile_pic');
+                $path = public_path().'/profile_pic'.$id."/";
+                File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+                $path = public_path();
+                $filename = '/profile_pic'.$id."/".time() . '.' . $profile_pic->getClientOriginalExtension();
+                Image::make($profile_pic)->resize(300, 300)->save(public_path($filename));
 
-            $filename = '/profile_pic'.$id."/".time() . '.' . $profile_pic->getClientOriginalExtension();
-            Image::make($profile_pic)->resize(300, 300)->save(public_path($filename));
-
-            if (isset($filename)){
-                $filename = $profile->profile_pic;
             }
-
-            if($profile){
+            $profile = Profile::where('user_id', $id)->first();
+            if ($profile){
+                if (!isset($filename)){
+                    $filename = $profile->profile_pic;
+                }
                 $userProfileData = Profile::where('user_id', $id)->
                 update([
                     'profile_pic' => $filename,
                 ]);
-            }else{
-                $userProfileData = Profile::where('user_id', $id)->
-                insert([
-                    'dob' => $request->dob,
-                    'user_id' => $request->user()->id,
-                    'gender' => $request->gender,
-                    'profession' => $request->profession
-                ]);
+           }
+           if ($userProfileData){
+                // $response = new StdClass;
+                $status = 200;
+                // $data->data = $response;
+                $message = "Profile Pic saved";
+           }
+            else{
+                $message = "Profile Pic not saved";
             }
-            $message = "profile pic saved";
-            $status = 200;
-        }else{
-            $status = 400;
-            $message = "upload an image";
+            $data->status = $status;
+            $data->message = $message;
         }
-
-        // if($request->hasFile('profile_pic')){
-        //     $directoryName = '/profile_pic/'.$id;
-        //     $profile_pic = $request->file('profile_pic');
-        //     if(!is_dir($directoryName)){
-        //         //Directory does not exist, so lets create it.
-        //         $result = File::makeDirectory(public_path($directoryName), 0777, true, true);
-        //     }
-        //     $filename = $directoryName."/". time() . '.' . $profile_pic->getClientOriginalExtension();
-        //     Image::make($profile_pic)->resize(300, 300)->save( public_path($filename));
-        //     $status = 400;
-        //     $message = "profile pic saved";
-        //     $profile = Profile::where('user_id', $request->user()->id)
-        //                         ->update([
-        //                            'profile_pic' => $filename,                                                
-        //                         ]);
-        // }
-       
-        $response->status = $status;
-        $response->message = $message;
-
-        return response()->json($response);
-        
+        return response()->json($data);
     }
 
 
