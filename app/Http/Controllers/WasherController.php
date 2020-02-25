@@ -58,7 +58,7 @@ class WasherController extends Controller
             Config::set('lon', $request->lon);
             // $washes = CarWashBooking::where('status', 'Pending')->where('accepted_by', '0')->get();
             $washes = CarWashBooking::
-            where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->orderBy('updated_at','desc')->get();
+            where('car_wash_bookings.status', 'Pending')->where('accepted_by', '0')->orderBy('updated_at','desc')->get()->where('status','Pending');
             // join('users', 'users.id', '=', 'car_wash_bookings.user_id')
             // ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
             // ->join('carmodels','carmodels.id','my_cars.car_model')
@@ -86,7 +86,7 @@ class WasherController extends Controller
         Config::set('lat', $request->lat);
         Config::set('lon', $request->lon);
         $washes = CarWashBooking::
-        where('accepted_by', $request->user()->id)->orderBy('updated_at','desc')->get();
+        where('accepted_by', $request->user()->id)->where('status','Accepted')->orderBy('updated_at','desc')->get();
         // join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
         // ->join('carmodels','carmodels.id','my_cars.car_model')
         // ->select('users.name as user_name','my_cars.*','carmodels.*','car_wash_bookings.*')
