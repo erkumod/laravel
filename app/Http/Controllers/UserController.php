@@ -426,6 +426,9 @@ class UserController extends Controller
 
     public function profilepic(Request $request)
     {
+        \Log::info("This is a message from a controller");
+        \Log::info(print_r($request->toArray(), true));
+        \Log::info($user_id);
         $response = new StdClass;
         $status = 400;
         $message = "Something went wrong";
