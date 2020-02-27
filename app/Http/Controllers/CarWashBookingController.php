@@ -156,7 +156,7 @@ class CarWashBookingController extends Controller
     // leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
     // ->select('car_wash_bookings.*', 'payment_cards.card_no')
     where('car_wash_bookings.user_id', $user_id)
-    ->whereIn('car_wash_bookings.status', ['Completed','Cancelled','Expired'])->get();
+    ->whereIn('car_wash_bookings.status', ['Completed','Cancelled','Expired'])->orderBy('updated_at','desc')->get();
     // $mylist = array();
     // foreach ($mybooking as $key => $value) {
     //     if ($value->status == 'Completed' || $value->status == 'Cancelled'){
