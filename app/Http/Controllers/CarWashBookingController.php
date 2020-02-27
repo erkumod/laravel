@@ -35,7 +35,7 @@ class CarWashBookingController extends Controller
                                         }
                                     }], //9 <= $time->diffInMinutes($start_time,false)
             'end_time'         =>   ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
-                                        if (!(6 >= ($start_time->diffInMinutes($end_time,false)/60))) {
+                                        if (!(50 >= ($start_time->diffInMinutes($end_time,false)/60))) {
                                             $fail('End time must be less then  6 hours from Start time.');
                                         }
                                     }], //6 >= ($time->diffInMinutes($end_time,false)/60)
