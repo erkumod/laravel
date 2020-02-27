@@ -24,7 +24,7 @@ class CarWashBookingController extends Controller
         $message = "Something Went Wrong!!!";
         $start_time =  Carbon::parse($request->start_time)->setTimezone('UTC');
         $end_time =  Carbon::parse($request->end_time)->setTimezone('UTC');
-        $time = Carbon::now();
+        $time = Carbon::now("UTC");
         $validator = Validator::make($request->all(), [
             'vehicle_id'        => 'required',
             'card_id'           => 'required',
