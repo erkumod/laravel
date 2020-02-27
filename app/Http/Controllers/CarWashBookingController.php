@@ -29,16 +29,16 @@ class CarWashBookingController extends Controller
             'vehicle_id'        => 'required',
             'card_id'           => 'required',
             'date'              => 'required',
-            'start_time'        =>  ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
-                                        if (!(9 <= $time->diffInMinutes($start_time,false))) {
-                                            $fail('Start time must be after 10 minutes from now.');
-                                        }
-                                    }], //9 <= $time->diffInMinutes($start_time,false)
-            'end_time'         =>   ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
-                                        if (!(50 >= ($start_time->diffInMinutes($end_time,false)/60))) {
-                                            $fail('End time must be less then  6 hours from Start time.');
-                                        }
-                                    }], //6 >= ($time->diffInMinutes($end_time,false)/60)
+            // 'start_time'        =>  ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
+            //                             if (!(9 <= $time->diffInMinutes($start_time,false))) {
+            //                                 $fail('Start time must be after 10 minutes from now.');
+            //                             }
+            //                         }], //9 <= $time->diffInMinutes($start_time,false)
+            // 'end_time'         =>   ['required',function ($attribute, $value, $fail) use($time,$start_time,$end_time) {
+            //                             if (!(6 >= ($start_time->diffInMinutes($end_time,false)/60))) {
+            //                                 $fail('End time must be less then  6 hours from Start time.');
+            //                             }
+            //                         }], //6 >= ($time->diffInMinutes($end_time,false)/60)
         ]);
 
         if ($validator->fails()) {
