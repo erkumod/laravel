@@ -251,29 +251,32 @@ class AuthApiController extends Controller
         $status = 400;
         $message = "Something Went Wrong";
         $id = $request->mobile;
-        $mobile = $request->mobile;
         $user = User::where('mobile', $id)->first();
-        $randphone = '123456';
-        $user->remember_token = $randphone;
-        $user->update(); 
-        $message = "Your%20OTP%20is%20$randphone.%20Please%20use%20this%20otp%20to%20reset%20your%20password.";
-        $url = "http://103.16.101.52:8080/sendsms/bulksms?username=bcks-imzhnd&password=Super123&type=0&dlr=1&destination=$mobile&source=BSSPLI&message='$message'";
-         $c = curl_init();
-         curl_setopt($c,CURLOPT_RETURNTRANSFER,1);
-         curl_setopt($c,CURLOPT_HTTPGET ,1);
-         
-         curl_setopt($c, CURLOPT_URL, $url);
-         $contents = curl_exec($c);
-           if (curl_errno($c)) {
-             echo 'Curl error: ' . curl_error($c);
-           }else{
-             curl_close($c);
-           }
+        if($user){
 
-       $message = "Sms sent";
-       $status = 200;
-
-            
+            $mobile = $user->country_code.$user->mobile;
+            $randphone = mt_rand(100000, 999999);
+            $user->remember_token = $randphone;
+            $user->update(); 
+            $message = "Your%20OTP%20is%20$randphone.%20Please%20use%20this%20otp%20to%20reset%20your%20password.";
+            $url = "http://103.16.101.52:8080/sendsms/bulksms?username=bcks-imzhnd&password=Super123&type=0&dlr=1&destination=$mobile&source=BSSPLI&message=$message";
+             $c = curl_init();
+             curl_setopt($c,CURLOPT_RETURNTRANSFER,1);
+             curl_setopt($c,CURLOPT_HTTPGET ,1);
+             
+             curl_setopt($c, CURLOPT_URL, $url);
+             $contents = curl_exec($c);
+               if (curl_errno($c)) {
+                 echo 'Curl error: ' . curl_error($c);
+               }else{
+                 curl_close($c);
+               }
+    
+           $message = "Sms sent";
+           $status = 200;
+    
+                
+        }
         $response->status = $status;
         $response->message = $message;
         return response()->json($response);
