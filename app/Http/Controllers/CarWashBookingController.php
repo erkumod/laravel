@@ -62,7 +62,7 @@ class CarWashBookingController extends Controller
         $mybooking->location      = $request->location;
         $mybooking->vehicle_id      = $request->vehicle_id;
         $mybooking->user_id        = $user_id;        
-        $mybooking->date        = $request->date;        
+        $mybooking->date        = Carbon::parse($request->date)->format('Y-m-d');
         $mybooking->start_time        = $request->start_time;    
         $mybooking->end_time        = $request->end_time;        
         $mybooking->card_id        = $request->card_id;        

@@ -264,11 +264,18 @@ class WasherController extends Controller
                                 ->where('accepted_by', $request->user()->id)                               
                                 ->get();
 
+        $totalWashes = $washes->count();
+        $earning = CarWashBooking::where('date', $request->date)
+                                ->where('accepted_by', $request->user()->id)
+                                ->where('status','Completed')                               
+                                ->get()->sum('fare');
         $response = new StdClass;
         $status = 200;
         $message = "Car wash not available. Refresh and retry";
         if ($washes){
             $response->wash_dates = $washes;
+            $response->earnings = $earning;
+            $response->totalWashes = $totalWashes;
             $message = "data retrieved successfully";
             $status = 200;
         }
@@ -307,10 +314,14 @@ class WasherController extends Controller
                                 // ->select('*')
                                 ->get();
 
+        $totalWashes = $washes->count();
+        $earning = $washes->where('status','Completed')->sum('fare');
         $response = new StdClass;
         $status = 200;
         $message = "Car wash not available. Refresh and retry";
         if ($washes){
+            $response->earnings = $earning;
+            $response->totalWashes = $totalWashes;
             $response->wash_dates = $washes;
             $message = "data retrieved successfully";
             $status = 200;
