@@ -92,23 +92,12 @@ class CarWashBookingController extends Controller
             $mybooking->color_name = $vehicle->color_name;
             $mybooking->type = $vehicle->type;
         }
-        $profile = Profile::where('user_id',$user_id)->first();
+        // $profile = Profile::where('user_id',$user_id)->first();
         // dd($profile);
-        if(is_null($profile->total_booking)){
-            $profile->total_booking = 0;
-        }
-        $profile->total_booking += 1;
         if(!is_null($request->promo)){
             $mybooking->isPromo        = true;
             
-        }else{
-            if($profile && !is_null($profile->unrewarded_booking)){
-                $profile->unrewarded_booking += 1;
-            }else{
-                $profile->unrewarded_booking = 1;
-            }
         }
-        $profile->save();
         $mybooking->save();
         if ($mybooking){
             $response->mybooking = $mybooking;
@@ -141,12 +130,12 @@ class CarWashBookingController extends Controller
             $mybooking->update();
             $status = 200;
             $message = "Car wash booking cancelled successfully";
-            if($mybooking->isPromo == true){
-                $profile = Profile::where('user_id',$user_id)->first();
-                $profile->unrewarded_booking -= 1;
-                $profile->total_booking -= 1;
-                $profile->save();
-            }
+            // if($mybooking->isPromo == true){
+            //     $profile = Profile::where('user_id',$user_id)->first();
+            //     $profile->unrewarded_booking -= 1;
+            //     $profile->total_booking -= 1;
+            //     $profile->save();
+            // }
         }
 
         $response->status = $status;

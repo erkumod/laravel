@@ -183,6 +183,19 @@ class WasherController extends Controller
             $washes->update(); 
             $response->accepted_wash = $washes;
             $profile = Profile::where('user_id',$washes->user_id)->first();
+            // $profile = Profile::where('user_id',$user_id)->first();
+        // dd($profile);
+            if(is_null($profile->total_booking)){
+                $profile->total_booking = 0;
+            }
+            $profile->total_booking += 1;
+            if(!$washes->isPromo){
+                if(is_null($profile->unrewarded_booking)){
+                    $profile->unrewarded_booking = 0;
+                }
+                $profile->unrewarded_booking += 1;
+            }
+            $profile->save();
             if($profile->unrewarded_booking == 8){
                 $data = array('type'=>"Mini7");
                 $data['user_id'] = $request->user()->id;
