@@ -284,13 +284,19 @@ class WasherController extends Controller
         $year = $request->year;
         // $start_date = date("d-m-Y", strtotime('monday this week', strtotime($week)));
         // $end_date = date("d-m-Y", strtotime('sunday this week', strtotime($week)));
-        $week_start = new \DateTime();
-        $week_start->setISODate($year,$week);
+        $date = Carbon::now(); // or $date = new Carbon();
+        $date->setISODate($year,$week); // 2016-10-17 23:59:59.000000
+        $week_start =  $date->copy()->startOfWeek(); // 2016-10-17 00:00:00.000000
+        $week_end = $date->endOfWeek(); // 2016-10-23 23:59:59.000000
+        // $week_start = new \DateTime();
+        // $week_start->setISODate($year,$week);
         $start_date =  $week_start->format('d-M-Y');
 
-        $week_end = new \DateTime();
-        $week_end->setISODate($year,$week);
+        // $week_end = new \DateTime();
+        // $week_end->setISODate($year,$week);
         $end_date =  $week_end->format('d-M-Y');
+        // dump($week_start);
+        // dd($week_end);
         $washes = CarWashBooking::where('date','>=' ,$start_date)
                                 ->where('date','<=' ,$end_date)
                                 ->where('accepted_by', $request->user()->id)
