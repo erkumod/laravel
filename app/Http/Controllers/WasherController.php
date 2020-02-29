@@ -290,17 +290,21 @@ class WasherController extends Controller
         $week_end = $date->endOfWeek(); // 2016-10-23 23:59:59.000000
         // $week_start = new \DateTime();
         // $week_start->setISODate($year,$week);
-        $start_date =  $week_start->format('d-M-Y');
+        $start_date =  $week_start->format('Y-m-d');
 
         // $week_end = new \DateTime();
         // $week_end->setISODate($year,$week);
-        $end_date =  $week_end->format('d-M-Y');
-        // dump($week_start);
-        // dd($week_end);
-        $washes = CarWashBooking::where('date','>=' ,$start_date)
-                                ->where('date','<=' ,$end_date)
+        $end_date =  $week_end->format('Y-m-d');
+        // dump($start_date);
+        // dd($end_date);
+        // $from = date($start_date);
+        // $to = date($end_date);
+        $washes = CarWashBooking::
+                                whereBetween('date', [$start_date, $end_date])
+                                    // where('date','>=' ,$start_date)
+                                // ->where('date','<=' ,$end_date)
                                 ->where('accepted_by', $request->user()->id)
-                                ->select('*')
+                                // ->select('*')
                                 ->get();
 
         $response = new StdClass;
