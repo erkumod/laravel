@@ -73,7 +73,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	
 	Route::get('reward_points'         , 'RewardController@rewards');
 	Route::get('user_rewards'         , 'RewardController@userrewards');
-	Route::post('user_rewards_redeem'         , 'RewardController@redeemrewards');
+	// Route::post('user_rewards_redeem'         , 'RewardController@redeemrewards');
 	Route::get('my_rewards'         , 'RewardController@myrewards');
 
 	Route::post('primary_selection'         , 'UserController@viewmyprimary');
@@ -136,5 +136,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('redeemPromo', 'PromoStampsController@redeemPromo');
 	Route::post('irredeemPromo', 'PromoStampsController@iredeemPromo');
 	Route::get('promoList', 'PromoStampsController@promoList');
+	Route::get('user_rewards_redeem', 'PromoStampsController@userRewardsRedeem');
 	Route::get('promoHistory', 'PromoStampsController@promoHistory');
 });

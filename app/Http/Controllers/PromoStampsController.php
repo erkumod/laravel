@@ -136,6 +136,25 @@ class PromoStampsController extends Controller
         }
     }
 
+    public function userRewardsRedeem(Request $request)
+    {
+        $response = new StdClass;
+        $response->booking_count = 0;
+        $response->status = 200;
+        try {
+            $booking_counts =  Profile::where('user_id',$request->user()->id)->first()->unrewarded_booking;
+            $message = 'Data fetched';
+            $response->booking_count = $booking_counts ?? 0;
+            
+        } catch (\Throwable $th) {
+            $response->booking_count = 0;
+            $message = 'ooops! something went wrong';
+            $response->status = 400;
+        }
+        $response->message = $message;
+        return response()->json($response);  
+    }
+
     /**
      * Show the form for creating a new resource.
      *
