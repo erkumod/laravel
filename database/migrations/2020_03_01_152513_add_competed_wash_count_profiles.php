@@ -27,8 +27,8 @@ class AddCompetedWashCountProfiles extends Migration
     public function down()
     {
         Schema::table('profiles', function (Blueprint $table) {
-            $table->dropColumn('competed_wash_count');
-            $table->dropColumn('total_competed_wash_count');
+            $table->dropColumn('completed_wash_count');
+            $table->dropColumn('total_completed_wash_count');
         });
     }
 }
