@@ -198,7 +198,7 @@ class CarWashBookingController extends Controller
     // join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
     // ->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')
     where('car_wash_bookings.user_id', $user_id)
-    ->whereIn('car_wash_bookings.status', ['Pending','Accepted'])
+    ->whereIn('car_wash_bookings.status', ['Pending','Accepted','Started'])
     ->orderBy('id','DESC')
     ->get();
     // $mylist = array();
