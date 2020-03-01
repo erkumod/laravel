@@ -9,6 +9,7 @@ use App\WasherDetails;
 use App\CarWashBooking;
 use App\PromoStamps;
 use App\Profile;
+use App\User;
 use App\MyCar;
 use StdClass;
 use Config;
@@ -135,6 +136,10 @@ class WasherController extends Controller
         $washes = CarWashBooking::where('id', $request->wash_id)->first();
         if ($washes && isset($washes->accepted_by) && $washes->accepted_by == '0'){
             $washes->accepted_by = $request->user()->id;
+            // $user = User::where('id',$request->user()->id)->first();
+            $profile = Profile::where('user_id',$request->user()->id)->first();
+            $washes->washer_name = $request->user()->name;
+            $washes->washer_profile_pic = $profile->profile_pic;
             $washes->status = 'Accepted';
             $washes->update(); 
             $response->accepted_wash = $washes;
@@ -232,7 +237,50 @@ class WasherController extends Controller
         return response()->json($response);
 
     }
+
     public function washerRewardData(Request $request)
+    {
+        $response = new StdClass;
+        $status = 200;
+        $message = "No data available";
+
+        $profile = Profile::where('user_id',$request->user()->id)->first();
+        if ($profile){
+            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
+            $response->redemption_history = [];
+            $status = 200;
+            $message = "Fetched successfully";
+
+        }
+        $response->status = $status;
+        $response->message = $message;
+
+        return response()->json($response);
+
+    }
+
+    public function historyWasherReward(Request $request)
+    {
+        $response = new StdClass;
+        $status = 200;
+        $message = "No data available";
+
+        $profile = Profile::where('user_id',$request->user()->id)->first();
+        if ($profile){
+            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
+            $response->redemption_history = [];
+            $status = 200;
+            $message = "Fetched successfully";
+
+        }
+        $response->status = $status;
+        $response->message = $message;
+
+        return response()->json($response);
+
+    }
+
+    public function redeemWasherReward(Request $request)
     {
         $response = new StdClass;
         $status = 200;
