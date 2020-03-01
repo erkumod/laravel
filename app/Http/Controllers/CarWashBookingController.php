@@ -318,6 +318,8 @@ class CarWashBookingController extends Controller
         if ($mybooking){
             $status = 200;
             $message = "Car wash booking details";
+            $mybooking->job_code = $mybooking->job_code ?? "211212-".$mybooking->id."-02-1111-01";
+            $mybooking->save();
             $response->booking = $mybooking;
         }
 
