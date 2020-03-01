@@ -73,6 +73,7 @@ class CarWashBookingController extends Controller
         $mybooking->lon             = $request->lon??0; 
         $mybooking->notes        = $notes;
         $mybooking->isPromo        = false;
+        $mybooking->job_code        = Carbon::now()->timestamp."-".$user_id."-".$request->date."-".$request->lot_no;
         if(!is_null($card)){
             $mybooking->card_no        = $card->card_no;
             $mybooking->card_type        = $card->card_type;
@@ -305,5 +306,23 @@ class CarWashBookingController extends Controller
 
         return response()->json($response);
 
+    }
+
+    public function carWashDetail(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $response = new StdClass;
+        $status = 400;
+        $message = "No Booking Found!!!";
+        $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
+        if ($mybooking){
+            $status = 200;
+            $message = "Car wash booking details";
+            $response->booking = $mybooking;
+        }
+
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);     
     }
 }

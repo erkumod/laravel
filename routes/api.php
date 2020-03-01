@@ -125,6 +125,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 
 	Route::get('check_washer', 'WasherController@checkstatus');
 	Route::post('book_car_wash', 'CarWashBookingController@addcarwashbooking');
+	Route::post('car_wash_detail', 'CarWashBookingController@carWashDetail');
 	Route::get('request_date_list'         , 'CarWashBookingController@washListDate');
 	Route::get('request_week_list'         , 'CarWashBookingController@washListweek');
 	Route::post('request_list_by_date'         , 'CarWashBookingController@washListByDate');
