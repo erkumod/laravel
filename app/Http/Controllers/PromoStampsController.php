@@ -87,9 +87,21 @@ class PromoStampsController extends Controller
                 $response->status = 401;
                 return response()->json($response);    
             }
+            switch ($stamp->type) {
+                case 'Mini7':
+                    $discount = 7;
+                break;
+                case 'Mini3':
+                    $discount = 3;
+                break;
+                
+                default:
+                    $discount = 0;
+                    break;
+            }
             // $data['code'] = $stamp ? $stamp->code : '';
             $message = 'This code is valid';
-            // $response->data = $data;
+            $response->type = $discount;
             $response->status = 200;
             $response->message = $message;
             return response()->json($response);    
