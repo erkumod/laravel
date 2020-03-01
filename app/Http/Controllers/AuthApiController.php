@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Profile;
 use App\OTP;
+use App\Mail\PasswordResetOtp;
 use JWTFactory;
 use JWTAuth;
 use Response;
@@ -282,6 +283,36 @@ class AuthApiController extends Controller
         return response()->json($response);
     }
 
+    public function passowordResetMail(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $id = $request->email;
+        $user = User::where('email', $id)->first();
+        if($user){
+            $randphone = mt_rand(100000, 999999);
+            $user->remember_token = $randphone;
+            $user->update(); 
+            $message = "Your OTP is $randphone.Please use this otp to reset your password.";
+            try {
+                //code...
+                Mail::to($id)->send(new PasswordResetOtp($message));
+                $message = "Mail sent";
+                $status = 200;
+            } catch (\Throwable $th) {
+                $message = "Something went wrong. Please try again after sometime";
+                $status = 401;
+                //throw $th;
+            }
+    
+                
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);
+    }
+
 
 
     public function sendOTP(Request $request)
@@ -370,15 +401,15 @@ class AuthApiController extends Controller
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong";
-        $id = $request->mobile;
-        $user = User::where('mobile', $id)->first();
+        $id = $request->email;
+        $user = User::where('email', $id)->first();
         if ($user){
-            if ($user->remember_token == $request->otp){
+            if (!is_null($user->remember_token) && $user->remember_token == $request->otp){
+                $user->remember_token = null;
                 $user->password = Hash::make($request->password);
                 $user->update();
                 $status = 200;
                 $message = "Password Changed";
-
             }
             else {
                 $message = "Otp Missmatch";
