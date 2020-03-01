@@ -208,8 +208,42 @@ class WasherController extends Controller
             }
 
             $profile->save();
+            $profile = Profile::where('user_id',$request->user()->id)->first();
+            if($profile){
+                if(is_null($profile->competed_wash_count)){
+                    $profile->competed_wash_count = 0;
+                }
+                if(is_null($profile->total_competed_wash_count)){
+                    $profile->total_competed_wash_count = 0;
+                }
+                $profile->competed_wash_count += 1;
+                $profile->total_competed_wash_count += 1;
+                $profile->save();
+
+            }
+            // competed_wash_count
             $status = 200;
             $message = "Completed successfully";
+
+        }
+        $response->status = $status;
+        $response->message = $message;
+
+        return response()->json($response);
+
+    }
+    public function washerRewardData(Request $request)
+    {
+        $response = new StdClass;
+        $status = 200;
+        $message = "No data available";
+
+        $profile = Profile::where('user_id',$request->user()->id)->first();
+        if ($profile){
+            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
+            $response->redemption_history = [];
+            $status = 200;
+            $message = "Fetched successfully";
 
         }
         $response->status = $status;
