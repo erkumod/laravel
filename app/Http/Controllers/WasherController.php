@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\WasherDetails;
 use App\CarWashBooking;
+use App\WasherReward;
 use App\PromoStamps;
 use App\Profile;
 use App\User;
@@ -215,18 +216,18 @@ class WasherController extends Controller
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
             if($profile){
-                if(is_null($profile->competed_wash_count)){
-                    $profile->competed_wash_count = 0;
+                if(is_null($profile->completed_wash_count)){
+                    $profile->completed_wash_count = 0;
                 }
-                if(is_null($profile->total_competed_wash_count)){
-                    $profile->total_competed_wash_count = 0;
+                if(is_null($profile->total_completed_wash_count)){
+                    $profile->total_completed_wash_count = 0;
                 }
-                $profile->competed_wash_count += 1;
-                $profile->total_competed_wash_count += 1;
+                $profile->completed_wash_count += 1;
+                $profile->total_completed_wash_count += 1;
                 $profile->save();
 
             }
-            // competed_wash_count
+            // completed_wash_count
             $status = 200;
             $message = "Completed successfully";
 
@@ -246,8 +247,8 @@ class WasherController extends Controller
 
         $profile = Profile::where('user_id',$request->user()->id)->first();
         if ($profile){
-            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
-            $response->redemption_history = [];
+            $response->completed_wash_count = $profile->completed_wash_count ?? 0;
+            $response->redemption_history = WasherReward::where('user_id',$request->user()->id)->get();
             $status = 200;
             $message = "Fetched successfully";
 
@@ -267,8 +268,8 @@ class WasherController extends Controller
 
         $profile = Profile::where('user_id',$request->user()->id)->first();
         if ($profile){
-            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
-            $response->redemption_history = [];
+            $response->completed_wash_count = $profile->completed_wash_count ?? 0;
+            $response->redemption_history = WasherReward::where('user_id',$request->user()->id)->get();
             $status = 200;
             $message = "Fetched successfully";
 
@@ -284,14 +285,25 @@ class WasherController extends Controller
     {
         $response = new StdClass;
         $status = 200;
-        $message = "No data available";
+        $message = "No sufficient wash for reedem reward";
 
         $profile = Profile::where('user_id',$request->user()->id)->first();
-        if ($profile){
-            $response->completed_wash_count = $profile->competed_wash_count ?? 0;
-            $response->redemption_history = [];
+        if ($profile && $profile->completed_wash_count >= 6){
+            $profile->completed_wash_count = $profile->completed_wash_count - 6;
+            $data = array();
+            $data['name'] = "1x Waterless Cleaning Solution";
+            $data['user_id'] = $request->user()->id;
+            $data['date'] =  Carbon::now();
+            $data['delivery_time'] = $request->delivery_time;
+            $data['postal_code'] = $request->postal_code;
+            $data['unit_number'] = $request->unit_number;
+            $data['code'] = "R-".Carbon::now()->timestamp."-".$request->user()->id;
+            $data['status'] = "Redeemed";
+            $data = WasherReward::create($data);
+            $profile->save();
+            $response->data = $data;
             $status = 200;
-            $message = "Fetched successfully";
+            $message = "Redeemed successfully";
 
         }
         $response->status = $status;

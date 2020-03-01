@@ -142,4 +142,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::get('user_rewards_redeem', 'PromoStampsController@userRewardsRedeem');
 	Route::get('promoHistory', 'PromoStampsController@promoHistory');
 	Route::get('washer_reward_data', 'WasherController@washerRewardData');
+	Route::post('redeem_washer_reward', 'WasherController@redeemWasherReward');
+	Route::get('history_washer_reward', 'WasherController@historyWasherReward');
 });
