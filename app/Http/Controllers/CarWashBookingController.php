@@ -7,6 +7,7 @@ use App\CarWashBooking;
 use App\MyCar;
 use App\PaymentCard;
 use App\PromoCode;
+use App\PromoStamps;
 use App\Profile;
 use StdClass;
 use Validator;
@@ -94,9 +95,17 @@ class CarWashBookingController extends Controller
             $mybooking->type = $vehicle->type;
         }
         // $profile = Profile::where('user_id',$user_id)->first();
-        // dd($profile);
+        // dd($profile);\
         if(!is_null($request->promo)){
-            $mybooking->isPromo        = true;
+            $promoCode = $request->promo;
+            $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
+            if(!$stamp){
+                $mybooking->isPromo        = false;    
+            }else{
+                $stamp->isValid = 'used';
+                $mybooking->isPromo        = true;
+                $stamp->save();
+            }
             
         }
         $mybooking->save();
