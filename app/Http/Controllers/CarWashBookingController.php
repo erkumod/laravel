@@ -310,11 +310,11 @@ class CarWashBookingController extends Controller
 
     public function carWashDetail(Request $request)
     {
-        $user_id = $request->user()->id;
+        // $user_id = $request->user()->id;
         $response = new StdClass;
         $status = 400;
         $message = "No Booking Found!!!";
-        $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
+        $mybooking = CarWashBooking::where('id', $request->wash_id)->first();
         if ($mybooking){
             $status = 200;
             $message = "Car wash booking details";
