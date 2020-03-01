@@ -87,15 +87,15 @@ class PromoStampsController extends Controller
                 $response->status = 401;
                 return response()->json($response);    
             }
-            $data['code'] = $stamp ? $stamp->code : '';
+            // $data['code'] = $stamp ? $stamp->code : '';
             $message = 'This code is valid';
-            $response->data = $data;
+            // $response->data = $data;
             $response->status = 200;
             $response->message = $message;
             return response()->json($response);    
         } catch (\Throwable $th) {
             $message = 'ooops! something went wrong please try again';
-            $response->data = [];
+            // $response->data = [];
             $response->status = 400;
             $response->message = $message;
             return response()->json($response);    
