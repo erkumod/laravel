@@ -135,6 +135,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('cancel_car_wash', 'CarWashBookingController@cancelcarwashbooking');
 	Route::get('redeemStamp', 'PromoStampsController@redeemStamp');
 	Route::post('redeemPromo', 'PromoStampsController@redeemPromo');
+	Route::post('validate_promo', 'PromoStampsController@validatePromoCode');
 	Route::post('irredeemPromo', 'PromoStampsController@iredeemPromo');
 	Route::get('promoList', 'PromoStampsController@promoList');
 	Route::get('user_rewards_redeem', 'PromoStampsController@userRewardsRedeem');

@@ -72,6 +72,36 @@ class PromoStampsController extends Controller
             return response()->json($response);    
         }
     }
+
+    public function validatePromoCode(Request $request)
+    {
+        $response = new StdClass;
+        $response->status = 200;
+        try {
+            $promoCode = $request->promo;
+            $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
+
+            if(!$stamp){
+                $message = 'The promocode is invalid or expired';
+                $response->message = $message;
+                $response->status = 401;
+                return response()->json($response);    
+            }
+            $data['code'] = $stamp ? $stamp->code : '';
+            $message = 'This code is valid';
+            $response->data = $data;
+            $response->status = 200;
+            $response->message = $message;
+            return response()->json($response);    
+        } catch (\Throwable $th) {
+            $message = 'ooops! something went wrong please try again';
+            $response->data = [];
+            $response->status = 400;
+            $response->message = $message;
+            return response()->json($response);    
+        }
+    }
+
     public function iredeemPromo(Request $request)
     {
         $response = new StdClass;
