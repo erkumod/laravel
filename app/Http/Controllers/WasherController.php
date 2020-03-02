@@ -138,9 +138,9 @@ class WasherController extends Controller
         if ($washes && isset($washes->accepted_by) && $washes->accepted_by == '0'){
             $washes->accepted_by = $request->user()->id;
             // $user = User::where('id',$request->user()->id)->first();
-            $profile = Profile::where('user_id',$request->user()->id)->first();
-            $washes->washer_name = $request->user()->name;
-            $washes->washer_profile_pic = $profile->profile_pic;
+            // $profile = Profile::where('user_id',$request->user()->id)->first();
+            // $washes->washer_name = $request->user()->name;
+            // $washes->washer_profile_pic = $profile->profile_pic;
             $washes->status = 'Accepted';
             $washes->update(); 
             $response->accepted_wash = $washes;
@@ -296,6 +296,7 @@ class WasherController extends Controller
             $data['date'] =  Carbon::now();
             $data['delivery_time'] = $request->delivery_time;
             $data['postal_code'] = $request->postal_code;
+            $data['address'] = $request->address;
             $data['unit_number'] = $request->unit_number;
             $data['code'] = "R-".Carbon::now()->timestamp."-".$request->user()->id;
             $data['status'] = "Redeemed";

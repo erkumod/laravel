@@ -51,4 +51,13 @@ class CarWashBooking extends Model
         }
     }
 
+    public function washer_profile()
+    {
+        return $this->hasOne('App\Profile', 'user_id', 'accepted_by');
+    }
+    public function washers()
+    {
+        return $this->hasOne('App\User', 'id', 'accepted_by');
+    }
+
 }

@@ -144,4 +144,5 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::get('washer_reward_data', 'WasherController@washerRewardData');
 	Route::post('redeem_washer_reward', 'WasherController@redeemWasherReward');
 	Route::get('history_washer_reward', 'WasherController@historyWasherReward');
+	Route::post('rate_washer', 'CarWashBookingController@rateWasher');
 });

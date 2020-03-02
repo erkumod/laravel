@@ -159,7 +159,7 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::
+    $mybooking = CarWashBooking::with(['washer_profile','washers:id,name'])->
     // leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
     // ->select('car_wash_bookings.*', 'payment_cards.card_no')
     where('car_wash_bookings.user_id', $user_id)
@@ -194,7 +194,7 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::
+    $mybooking = CarWashBooking::with(['washer_profile','washers:id,name'])->
     // join('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
     // ->select('car_wash_bookings.*', 'payment_cards.card_no','payment_cards.type as card_type')
     where('car_wash_bookings.user_id', $user_id)
@@ -335,5 +335,33 @@ class CarWashBookingController extends Controller
         $response->status = $status;
         $response->message = $message;
         return response()->json($response);     
+    }
+
+    public function rateWasher(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "oops! something went wrong";
+        $washer_id = $request->washer_id;
+        $type = $request->type;
+        $profile = Profile::where('user_id',$washer_id)->first();
+        if($profile && !is_null($profile)){
+            switch ($type) {
+                case 'upvote':
+                case 'like':
+                    $profile->upvote_count += 1;
+                break;
+                case 'downvote':
+                    case 'dislike':
+                        $profile->downvote_count += 1;
+                    break;
+            }
+            $profile->save();
+            $status = 200;
+            $message = "Voted";
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);  
     }
 }
