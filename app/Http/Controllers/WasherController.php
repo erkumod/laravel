@@ -441,7 +441,9 @@ class WasherController extends Controller
 
     public function washListweek(Request $request)
     {
-        $washes = CarWashBooking::where('accepted_by', $request->user()->id)->select('date')->groupBy('date')->get();
+        $washes = CarWashBooking::where('accepted_by', $request->user()->id)->select('date')->groupBy('date')->get()->groupBy(function($val) {
+            return Carbon::parse($val->date)->format('W Y');
+        });
         $response = new StdClass;
         $status = 200;
         $message = "Car wash dates not available. Refresh and retry";
@@ -459,10 +461,10 @@ class WasherController extends Controller
                     array_push($weeklist, $obj);
                 }
             }
-            // $weeklist = collect($weeklist);
-            // $weeklist = $weeklist->unique(function ($item) {
-            //     return $item->week.$item->year;
-            // });
+            $weeklist = collect($weeklist);
+            $weeklist = $weeklist->unique(function ($item) {
+                return $item->week.$item->year;
+            });
             $response->wash_week = $weeklist;
             $message = "data retrieved successfully";
             $status = 200;
