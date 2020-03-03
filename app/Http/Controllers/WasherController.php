@@ -462,8 +462,8 @@ class WasherController extends Controller
             $weeklist = collect($weeklist);
             $weeklist = $weeklist->unique(function ($item) {
                 return $item->week.$item->year;
-            })->all()->toArray();
-            $response->wash_week = $weeklist;
+            })->all();
+            $response->wash_week = (array) $weeklist;
             $message = "data retrieved successfully";
             $status = 200;
         }
