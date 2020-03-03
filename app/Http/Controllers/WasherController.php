@@ -455,10 +455,12 @@ class WasherController extends Controller
                 $year = date('Y', $time);
                 $obj->week = $week;
                 $obj->year = $year;
-                if (in_array($week, $weeklist) < 1){
-                    array_push($weeklist, $obj);
-                }
+                
+                array_push($weeklist, $obj);
+                // if (in_array($week, $weeklist) < 1){
+                // }
             }
+            dd($weeklist);
             $weeklist = collect($weeklist);
             $weeklist = $weeklist->unique('week');
             $response->wash_week = json_decode(json_encode($weeklist, true));
