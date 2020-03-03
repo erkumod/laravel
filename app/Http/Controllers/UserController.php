@@ -173,7 +173,7 @@ class UserController extends Controller
                     $userProfileData['PrimaryCar']->car_brand_name = $brand ? $brand->brand_name : '';
                     $userProfileData['PrimaryCar']->car_model_name = $model ? $model->model_name : '';
                     $userProfileData['PrimaryCar']->car_brand_name = $userProfileData['PrimaryCar']->car_brand_name;
-                    $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_brand_name;
+                    $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_model_name;
                 }
                 $user->dob = $userProfileData->dob;
                 $user->gender = $userProfileData->gender;
