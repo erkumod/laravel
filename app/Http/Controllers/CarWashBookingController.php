@@ -341,7 +341,7 @@ class CarWashBookingController extends Controller
     {
         $response = new StdClass;
         $status = 400;
-        $message = "Alreadu Voted or Not able to vote";
+        $message = "Already Voted or Not able to vote";
         $washer_id = $request->washer_id;
         $type = $request->type;
         $profile = Profile::where('user_id',$washer_id)->first();
