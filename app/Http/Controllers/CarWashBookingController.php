@@ -341,11 +341,12 @@ class CarWashBookingController extends Controller
     {
         $response = new StdClass;
         $status = 400;
-        $message = "oops! something went wrong";
+        $message = "Alreadu Voted or Not able to vote";
         $washer_id = $request->washer_id;
         $type = $request->type;
         $profile = Profile::where('user_id',$washer_id)->first();
-        if($profile && !is_null($profile)){
+        $mybooking = CarWashBooking::where('id', $request->wash_id)->first();
+        if($profile && !is_null($profile) && $mybooking && (!$mybooking->is_rated)){
             switch ($type) {
                 case 'upvote':
                 case 'like':
@@ -359,6 +360,8 @@ class CarWashBookingController extends Controller
             $profile->save();
             $status = 200;
             $message = "Voted";
+            $mybooking->is_rated = true;
+            $mybooking->save();
         }
         $response->status = $status;
         $response->message = $message;
