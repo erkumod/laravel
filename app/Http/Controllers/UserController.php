@@ -181,9 +181,13 @@ class UserController extends Controller
                 $user->profession = $userProfileData->profession;
                 $user->primary_car = $userProfileData->PrimaryCar;
                 $user->primary_card = $userProfileData->PrimaryCard;
+                $user->upvote_count = $userProfileData->upvote_count;
+                $user->downvote_count = $userProfileData->downvote_count;
             }else{
                 $user->primary_car =  null;
                 $user->primary_card = null;
+                $user->upvote_count = 0;
+                $user->downvote_count = 0;
 
             }
             if (!isset($user->profile_pic) || $user->profile_pic == ''){
