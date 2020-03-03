@@ -191,7 +191,7 @@ class UserController extends Controller
 
             }
             if (!isset($user->profile_pic) || $user->profile_pic == ''){
-                $user->profile_pic="/profile_pic/profile.png";
+                $user->profile_pic="/profile_pic/avtar_new.png";
             }
             $data->profile = $user;
             $data->status = 200;
