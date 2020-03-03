@@ -25,12 +25,14 @@ class CarWashBooking extends Model
         $lat2 = $dataLat;
         $lon1 = $this->lon;
         $lon2 = $dataLon;
-        if(is_null($lat1) || is_null($lat2)||is_null($lon1) ||is_null($lon2)){
+        if(is_null($lat1) || is_null($lat2) || is_null($lon1) ||is_null($lon2)){
             return 0;
         }
         elseif(empty($lat1) && empty($lon1)){
             return 0;
         }elseif (($lat1 == $lat2) && ($lon1 == $lon2)) {
+            return 0;
+        }elseif (!is_numeric($lat1) || !is_numeric($lat2) || !is_numeric($lon1) || !is_numeric($lon2)) {
             return 0;
         }
         else {
