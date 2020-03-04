@@ -100,9 +100,10 @@ class CarWashBookingController extends Controller
             $promoCode = $request->promo;
             $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
             if(!$stamp){
-                $mybooking->isPromo        = false;    
+                $mybooking->isPromo        = false;  
             }else{
                 $stamp->isValid = 'used';
+                $mybooking->booking_promp        = $request->promo;  
                 $mybooking->isPromo        = true;
                 $stamp->save();
             }
@@ -137,6 +138,13 @@ class CarWashBookingController extends Controller
                 return response()->json($response);
             }
             $mybooking->status      = 'Cancelled';
+            $promoCode = $mybooking->booking_promp;
+            $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','used')->first();
+            if($stamp){
+                $stamp->isValid = "valid";
+                $stamp->save();
+            }
+            // dd($stamp);
             $mybooking->update();
             $status = 200;
             $message = "Car wash booking cancelled successfully";

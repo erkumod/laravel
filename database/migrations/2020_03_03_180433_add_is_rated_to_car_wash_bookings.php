@@ -26,7 +26,7 @@ class AddIsRatedToCarWashBookings extends Migration
     public function down()
     {
         Schema::table('car_wash_bookings', function (Blueprint $table) {
-            $table->boolean('is_rated');
+            $table->dropColumn('is_rated');
         });
     }
 }

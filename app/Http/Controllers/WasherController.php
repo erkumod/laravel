@@ -186,6 +186,25 @@ class WasherController extends Controller
         $washes = CarWashBooking::where('id', $request->wash_id)->where('status', 'Started')->where('accepted_by', $request->user()->id)->first();
         if ($washes){
             $washes->status = 'Completed';
+            $washes->wash_completed_date=Carbon::now();
+            if($request->file('image1')){
+                $completeImage1 = $request->file('image1');
+                $path = public_path().'/complete/image1/'.$request->wash_id."/";
+                File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+                $path = public_path();
+                $filename = '/complete/image1/'.$request->wash_id."/".time() . '.' . $completeImage1->getClientOriginalExtension();
+                Image::make($completeImage1)->resize(300, 300)->save(public_path($filename));
+                $washes->booking_complete_image1 =$filename;
+            }
+            if($request->file('image2')){
+                $completeImage2 = $request->file('image2');
+                $path = public_path().'/complete/image2/'.$request->wash_id."/";
+                File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+                $path = public_path();
+                $filename = '/complete/image2/'.$request->wash_id."/".time() . '.' . $completeImage2->getClientOriginalExtension();
+                Image::make($completeImage2)->resize(300, 300)->save(public_path($filename));
+                $washes->booking_complete_image2 =$filename;
+            }
             $washes->update(); 
             $response->accepted_wash = $washes;
             $profile = Profile::where('user_id',$washes->user_id)->first();
