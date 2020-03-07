@@ -145,4 +145,5 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('redeem_washer_reward', 'WasherController@redeemWasherReward');
 	Route::get('history_washer_reward', 'WasherController@historyWasherReward');
 	Route::post('rate_washer', 'CarWashBookingController@rateWasher');
+	Route::post('set_notification_token',"PushNotificationController@store");
 });
