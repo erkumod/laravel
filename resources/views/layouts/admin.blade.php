@@ -158,6 +158,9 @@
                                     <li><a href="{{ url('admin/washerlists')}}">Washer List</a></li>                                   
                                 </ul>
                             </li>
+                            <li>
+                                <a href="{{ url('admin/notification')}}" class="waves-effect"><i class="zmdi zmdi-view-dashboard"></i> <span> Notification </span> </a>
+                            </li>
                             {{-- <li class="has_sub">
                                <a href="javascript:void(0);" class="waves-effect"> <i class="fa fa-arrows-h"></i> <span> Slider Images</span><span class="menu-arrow"></span> </a>
                                <ul class="list-unstyled">

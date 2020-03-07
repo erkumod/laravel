@@ -49,6 +49,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function() {
 	Route::get('vehicle_color/datatable', 'VehicleColorController@datatable');
 	Route::resource('vehicle_color', 'VehicleColorController');
 
+	/****************     Routes For Account CRUD       ****************/
+	Route::get('notification/datatable', 'NotificationController@datatable');
+	Route::resource('notification', 'NotificationController');
+
 
 
 	Route::get('complains', 'AdminController@complain');
