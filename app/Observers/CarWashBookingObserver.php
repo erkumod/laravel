@@ -16,7 +16,7 @@ class CarWashBookingObserver
     public function retrieved(CarWashBooking $carWashBooking)
     {
         $end_time = Carbon::parse($carWashBooking->end_time);
-        if($end_time->lt(Carbon::now()))
+        if($end_time->lt(Carbon::now()) && $carWashBooking->status == "Pending")
         {
             $carWashBooking->status = 'Expired';
             $carWashBooking->save();
