@@ -20,6 +20,9 @@ class CarWashBookingObserver
         {
             $carWashBooking->status = 'Expired';
             $carWashBooking->save();
+        }elseif ($carWashBooking->status == "Expired" && $carWashBooking->wash_completed_date != Null) {
+            $carWashBooking->status = 'Completed';
+            $carWashBooking->save();
         }
     }
     /**
