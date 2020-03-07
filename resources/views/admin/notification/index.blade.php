@@ -54,12 +54,12 @@
                     name: 'id',
                 },
                 {
-                    data: 'title',
-                    name: 'title',
+                    data: 'notification_title',
+                    name: 'notification_title',
                 },
                 {
-                    data: 'description',
-                    name: 'description',
+                    data: 'notification_desc',
+                    name: 'notification_desc',
                 },
                 {
                     "data": null,
