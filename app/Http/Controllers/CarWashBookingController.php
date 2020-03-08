@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\CarWashBooking;
+use App\PushNotification;
 use App\MyCar;
 use App\PaymentCard;
 use App\PromoCode;

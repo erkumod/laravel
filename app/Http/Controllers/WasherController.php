@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\WasherDetails;
 use App\CarWashBooking;
 use App\BookingChat;
+use App\PushNotification;
 use App\WasherReward;
 use App\PromoStamps;
 use App\Profile;

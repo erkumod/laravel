@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Notifications;
+use App\PushNotification;
 use Illuminate\Http\Request;
 
 use Config;

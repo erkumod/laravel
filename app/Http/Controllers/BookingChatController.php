@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\BookingChat;
+use App\PushNotification;
 use Illuminate\Http\Request;
 use StdClass;
 use Response;
