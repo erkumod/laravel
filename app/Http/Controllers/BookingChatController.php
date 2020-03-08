@@ -52,7 +52,7 @@ class BookingChatController extends Controller
                 'message' => $message,
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
-                'is_washer' => $request->is_washer,
+                'is_washer' => $is_washer,
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);
