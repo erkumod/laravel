@@ -146,6 +146,7 @@ class WasherController extends Controller
             $washes->status = 'Accepted';
             $washes->update(); 
             $response->accepted_wash = $washes;
+            $is_washer = true;
             $status = 200;
             $title = "Yes! We have found a shine specialist for you!";
             $message = 'You can check your booking status in “Bookings” > “Scheduled” tab.';
