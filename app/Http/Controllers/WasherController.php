@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\WasherDetails;
 use App\CarWashBooking;
+use App\BookingChat;
 use App\WasherReward;
 use App\PromoStamps;
 use App\Profile;
@@ -145,6 +146,9 @@ class WasherController extends Controller
             $washes->update(); 
             $response->accepted_wash = $washes;
             $status = 200;
+            $title = "Yes! We have found a shine specialist for you!";
+            $message = 'You can check your booking status in “Bookings” > “Scheduled” tab.';
+            $result = NotificationController::sendPushNotification($message,$washes->user_id,$title);
             $message = "Accepted successfully";
 
         }
@@ -168,6 +172,20 @@ class WasherController extends Controller
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Accepted successfully";
+            
+            $msg = "Your Shine Specialist has arrived and started the job!";
+            $booking_id = $washes->id;
+            $sender_id = $washes->accepted_by;
+            $receiver_id = $washes->user_id;
+            $data = array(
+                'message' => $msg,
+                'booking_id' => (int) $booking_id,
+                'receiver_id' => (int) $receiver_id,
+                'is_washer' => $is_washer,
+                'sender_id' => $sender_id,
+            );
+            $messageRes = BookingChat::create($data);
+            $result = NotificationController::sendPushNotification($msg,$sender_id,$title);
 
         }
         $response->status = $status;
@@ -223,15 +241,19 @@ class WasherController extends Controller
             $profile->save();
             if($profile->unrewarded_booking == 8){
                 $data = array('type'=>"Mini7");
-                $data['user_id'] = $request->user()->id;
+                $data['user_id'] = $washes->user_id;
                 $data['code'] = Str::random(8);
                 $data['type'] = 'valid';
                 $data['expired_at'] =  Carbon::now()->addMonths(6);
                 $stamp = PromoStamps::create($data);
                 $profile->unrewarded_booking = 0;
                 $profile->save();
+                $message = 'Congratulations!You have successfully redeemed $7 off!T&C applies.';
+                $result = NotificationController::sendPushNotification($message,$washes->user_id,$title);
             }
-
+            $title = "Yay, your vehicle has been cleaned!";
+            $push = "You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab."; 
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,$title);
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
             if($profile){
@@ -353,7 +375,9 @@ class WasherController extends Controller
                     Image::make($cancel_image)->resize(300, 300)->save(public_path($filename));
                     $washes->cancel_image =$filename;
                 }
-            $washes->update(); 
+            $washes->update();
+            $push = "Sorry! Your booking request has been cancelled by the shine specialist. We are still looking for another shine specialist for you! Hang on tight!";
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,$title);
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Canceld successfully";

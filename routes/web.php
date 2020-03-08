@@ -14,6 +14,7 @@ Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/about', 'PagesController@about')->name('about');
 
 Route::get('/payment', 'PagesController@payment')->name('paymentform');
+Route::get('/TestNotification', 'NotificationController@TestNotification')->name('TestNotification');
 
 Route::post('/submit', 'Formcontroller@submit')->name('paymentform');
 

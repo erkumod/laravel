@@ -15,6 +15,8 @@ class PromoStampsController extends Controller
     {
         $response = new StdClass;
         $profile = Profile::where('user_id',$request->user()->id)->first();
+        $user_id= $request->user()->id;
+        $message = 'Promo Can not reddem';
         if( $profile->unrewarded_booking >= 4 && $profile->unrewarded_booking < 8){
             $data = array('type'=>"Mini3");
             $data['user_id'] = $request->user()->id;
@@ -24,6 +26,8 @@ class PromoStampsController extends Controller
             $stamp = PromoStamps::create($data);
             $profile->unrewarded_booking -= 4;
             $profile->save();
+            $message = 'Congratulations!You have successfully redeemed $3 off!T&C applies.';
+            $result = NotificationController::sendPushNotification($message,$user_id,$title);
         }elseif($profile->unrewarded_booking == 8){
             $data = array('type'=>"Mini7");
             $data['user_id'] = $request->user()->id;
@@ -33,8 +37,10 @@ class PromoStampsController extends Controller
             $stamp = PromoStamps::create($data);
             $profile->unrewarded_booking = 0;
             $profile->save();
+            $message = 'Promo Reddemed';
+            $message = 'Congratulations!You have successfully redeemed $7 off!T&C applies.';
+            $result = NotificationController::sendPushNotification($message,$registatoin_ids,$title);
         }
-        $message = 'Promo Reddemed';
         $response->message = $message;
         return response()->json($response);    
     }

@@ -59,6 +59,8 @@ class BookingChatController extends Controller
             $response->messageRes = $messageRes;
             $response->status = 200;
             $response->message = 'success';
+            $msg = "You have new msg for booking";
+            $result = NotificationController::sendPushNotification($msg,$receiver_id,$title);
         }
         return response()->json($response);
     }
