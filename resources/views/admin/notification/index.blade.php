@@ -24,8 +24,9 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>Code</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>User Type</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -60,6 +61,10 @@
                 {
                     data: 'notification_desc',
                     name: 'notification_desc',
+                },
+                {
+                    data: 'user_type',
+                    name: 'user_type',
                 },
                 {
                     "data": null,

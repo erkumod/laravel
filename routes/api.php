@@ -21,6 +21,7 @@ Route::post('login', 'AuthApiController@login');
 Route::post('logintest', 'AuthApiController@googleloginfun');
 Route::post('recover', 'AuthApiController@recover');
 Route::get('passwordotp', 'AuthApiController@passowordsendOTP');
+Route::post('verifyPasswordResetOtp', 'AuthApiController@verifyPasswordResetOtp');
 Route::post('sendPasswordResetMail', 'AuthApiController@passowordResetMail');
 Route::post('validate_password', 'AuthApiController@validatechangeOTP');
 

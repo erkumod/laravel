@@ -54,6 +54,30 @@ class AuthApiController extends Controller
 
 
 
+    public function verifyPasswordResetOtp(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $user = User::where('email',$request->email)->first();
+        if ($user){
+            if (isset($user->remember_token) && $request->otp == $user->remember_token){
+                $status = 200;
+                $message = "Otp verified";
+            }
+            else {
+                $status = 200;
+                $message = "Otp Missmatch";
+            }
+        }
+        else {
+            $status = 200;
+            $message = "User Not Found";
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);
+    }
 
 
     public function login(Request $request)
