@@ -44,6 +44,7 @@ class BookingChatController extends Controller
         $message = $request->message;
         $booking_id = $request->booking_id;
         $receiver_id = $request->receiver_id;
+        $is_washer = filter_var($request->is_washer, FILTER_VALIDATE_BOOLEAN);
         $sender_id = $request->user()->id;
         
         if($booking_id && $message && $receiver_id){
@@ -51,6 +52,7 @@ class BookingChatController extends Controller
                 'message' => $message,
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
+                'is_washer' => $request->is_washer,
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);

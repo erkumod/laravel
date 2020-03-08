@@ -20,6 +20,7 @@ class CreateBookingChatsTable extends Migration
             $table->unsignedInteger('booking_id')->nullable()->default(null);
             $table->string('flag')->nullable()->default(null);
             $table->text('message')->nullable()->default(null);
+            $table->boolean('is_washer')->nullable()->default(null);
             $table->timestamps();
         });
     }
