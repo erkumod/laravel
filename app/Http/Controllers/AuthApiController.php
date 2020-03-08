@@ -280,7 +280,7 @@ class AuthApiController extends Controller
         if($user){
 
             $mobile = $user->country_code.$user->mobile;
-            $randphone = mt_rand(100000, 999999);
+            $randphone = mt_rand(10000, 99999);
             $user->remember_token = $randphone;
             $user->update(); 
             $message = "Your%20OTP%20is%20$randphone.%20Please%20use%20this%20otp%20to%20reset%20your%20password.";
@@ -315,7 +315,7 @@ class AuthApiController extends Controller
         $id = $request->email;
         $user = User::where('email', $id)->first();
         if($user){
-            $randphone = mt_rand(100000, 999999);
+            $randphone = mt_rand(10000, 99999);
             $user->remember_token = $randphone;
             $user->update(); 
             $message = "Your OTP is $randphone.Please use this otp to reset your password.";
