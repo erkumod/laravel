@@ -154,10 +154,10 @@ class NotificationController extends Controller
         $push = PushNotification::where('user_id',$user_id)->first();
         $data = array(
             'notification_title' => $title,
-            'notification_desc0' => $message,
+            'notification_desc' => $message,
             'user_id'   => $user_id,
             'user_type'          => $user_type,
-            'notification'       => 'user_action'
+            'type'       => 'user_action'
         );
         Notifications::create($data);
         if($push){
