@@ -150,35 +150,41 @@ class NotificationController extends Controller
     public static function sendPushNotification($message,$user_id,$title = "Swipe")
     {
         $push = PushNotification::where('user_id',$user_id)->first();
-        $notification_token = $push->notification_token;
-        $registatoin_ids = array();
-        array_push($registatoin_ids,$notification_token);
-        $fields = array(
-            'registration_ids' => $registatoin_ids,
-            'notification' => array (
-                    "body" => $message,
-                    "title" => $title,
-                )
-        );
-        $GOOGLE_API_KEY = env('G_API_KEY');
-        $FCM_URL = 'https://fcm.googleapis.com/fcm/send';
-        $headers = array(
-            'Authorization: key=' . $GOOGLE_API_KEY,
-            'Content-Type: application/json'
-        );
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $FCM_URL);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);   
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($ch);               
-        // if ($result === FALSE) {
-            // die('Curl failed: ' . curl_error($ch));
-        // }
-        curl_close($ch);
-        return $result;
+        if($push){
+            $notification_token = $push->notification_token;
+            if($notification_token){
+    
+                $registatoin_ids = array();
+                array_push($registatoin_ids,$notification_token);
+                $fields = array(
+                    'registration_ids' => $registatoin_ids,
+                    'notification' => array (
+                            "body" => $message,
+                            "title" => $title,
+                        )
+                );
+                $GOOGLE_API_KEY = env('G_API_KEY');
+                $FCM_URL = 'https://fcm.googleapis.com/fcm/send';
+                $headers = array(
+                    'Authorization: key=' . $GOOGLE_API_KEY,
+                    'Content-Type: application/json'
+                );
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $FCM_URL);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);   
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                $result = curl_exec($ch);               
+                // if ($result === FALSE) {
+                    // die('Curl failed: ' . curl_error($ch));
+                // }
+                curl_close($ch);
+                return $result;
+            }
+        }
+        return false;
     }
 }
