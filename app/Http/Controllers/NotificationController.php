@@ -139,9 +139,11 @@ class NotificationController extends Controller
     public function TestNotification(Request $request)
     {
         $registatoin_ids = array();
-        $gcm_regid = "ctW1vgj56F4:APA91bG-E4WCGn3jVpRbMBIpGCQN9veUbgNXETEo76rJ9RzqPDCY20Lt7h-3l5PwYPLI1A-IqId2Ml5pVuooHlrLW4rEFDGrLXMEryK9Mx_lms_natv-ikNzKCK1dNL8aRrn5eOlbbxZ";
+        $gcm_regid = $request->user()->id;
+        // $gcm_regid = "ctW1vgj56F4:APA91bG-E4WCGn3jVpRbMBIpGCQN9veUbgNXETEo76rJ9RzqPDCY20Lt7h-3l5PwYPLI1A-IqId2Ml5pVuooHlrLW4rEFDGrLXMEryK9Mx_lms_natv-ikNzKCK1dNL8aRrn5eOlbbxZ";
         array_push($registatoin_ids,$gcm_regid);
         $message = "This is test By hiren";
+        $title = 'swipe';
         $result = NotificationController::sendPushNotification($message,$registatoin_ids,$title);
         $result = json_decode($result);
         dd($result);
