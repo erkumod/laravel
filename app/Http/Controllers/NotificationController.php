@@ -7,6 +7,7 @@ use App\PushNotification;
 use Illuminate\Http\Request;
 
 use Config;
+use StdClass;
 use Validator;
 
 use Yajra\Datatables\Datatables;
@@ -196,5 +197,21 @@ class NotificationController extends Controller
             }
         }
         return false;
+    }
+
+    public function getPushList(Request $request)
+    {
+        $response = new StdClass;
+        $response->status = 400;
+        $response->message = "No current notification";
+        $response->notifications = null;
+        $user_id=$request->user()->id;
+        if($user_id){
+            $notifications = Notifications::where('user_id',$user_id)->get();
+            $response->notifications = $notifications;
+            $response->status = 200;
+            $response->message = 'success';
+        }
+        return response()->json($response);
     }
 }
