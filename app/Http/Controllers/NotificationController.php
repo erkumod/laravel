@@ -78,8 +78,8 @@ class NotificationController extends Controller
             $fields = array(
                 'registration_ids' => $registatoin_ids,
                 'notification' => array (
-                        "body" => $message,
-                        "title" => $title,
+                        "title" => $input['notification_title'],
+                        "body" => $input['notification_desc'],
                     )
             );
             $GOOGLE_API_KEY = env('G_API_KEY');
