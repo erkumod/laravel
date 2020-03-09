@@ -31,7 +31,7 @@ class NotificationController extends Controller
      */
     public function datatable(Request $request)
     {
-        $getdata =  Notifications::get();
+        $getdata =  Notifications::where('user_id',null)->get();
         return Datatables::of($getdata)->make(true);
     }
 
