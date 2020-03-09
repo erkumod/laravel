@@ -149,9 +149,17 @@ class NotificationController extends Controller
         dd($result);
     }
 
-    public static function sendPushNotification($message,$user_id,$title = "Swipe")
+    public static function sendPushNotification($message,$user_id,$title = "Swipe",$user_type = null)
     {
         $push = PushNotification::where('user_id',$user_id)->first();
+        $data = array(
+            'notification_title' => $title,
+            'notification_desc0' => $message,
+            'user_id'   => $user_id,
+            'user_type'          => $user_type,
+            'notification'       => 'user_action'
+        );
+        Notifications::create($data);
         if($push){
             $notification_token = $push->notification_token;
             if($notification_token){

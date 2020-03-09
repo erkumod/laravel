@@ -13,7 +13,7 @@
 <div class='form-group'>
     {!! Form::label('user_type', 'User Type:', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
-    {!! Form::select('user_type', ["washer"=>"Washer","Customer"=>"customer"], null, ['class' => 'form-control','rows'=> '3','id'=>"user_type"])!!}
+    {!! Form::select('user_type', ["washer"=>"Washer","customer"=>"Customer"], null, ['class' => 'form-control','rows'=> '3','id'=>"user_type"])!!}
     </div>
     @if($errors->has('user_type'))
         <span class="text-danger m-b-none">{{ $errors->first('user_type') }}</span>

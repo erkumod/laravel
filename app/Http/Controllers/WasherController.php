@@ -150,7 +150,7 @@ class WasherController extends Controller
             $status = 200;
             $title = "Yes! We have found a shine specialist for you!";
             $message = 'You can check your booking status in “Bookings” > “Scheduled” tab.';
-            $result = NotificationController::sendPushNotification($message,$washes->user_id,"Swipe");
+            $result = NotificationController::sendPushNotification($message,$washes->user_id,"Booking",'customer');
             $message = "Accepted successfully";
 
         }
@@ -183,11 +183,11 @@ class WasherController extends Controller
                 'message' => $msg,
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
-                'is_washer' => $is_washer,
+                'is_washer' => true,
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);
-            $result = NotificationController::sendPushNotification($msg,$sender_id,"Swipe");
+            $result = NotificationController::sendPushNotification($msg,$sender_id,"Booking",'customer');
 
         }
         $response->status = $status;
@@ -251,11 +251,11 @@ class WasherController extends Controller
                 $profile->unrewarded_booking = 0;
                 $profile->save();
                 $message = 'Congratulations!You have successfully redeemed $7 off!T&C applies.';
-                $result = NotificationController::sendPushNotification($message,$washes->user_id,"Swipe");
+                $result = NotificationController::sendPushNotification($message,$washes->user_id,"Reward",'customer');
             }
-            $title = "Yay, your vehicle has been cleaned!";
-            $push = "You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab."; 
-            $result = NotificationController::sendPushNotification($push,$washes->user_id,$title);
+            $title = "Booking";
+            $push = "Yay, your vehicle has been cleaned!You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab."; 
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,$title,'customer');
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
             if($profile){
@@ -379,7 +379,7 @@ class WasherController extends Controller
                 }
             $washes->update();
             $push = "Sorry! Your booking request has been cancelled by the shine specialist. We are still looking for another shine specialist for you! Hang on tight!";
-            $result = NotificationController::sendPushNotification($push,$washes->user_id,"Swipe");
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,"Booking",'customer');
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Canceld successfully";
