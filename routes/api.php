@@ -150,5 +150,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('set_notification_token',"PushNotificationController@store");
 	Route::post('sendMessage',"BookingChatController@store");
 	Route::post('getMessages',"BookingChatController@getMessages");
-	Route::get('getPushList',"NotificationController@getPushList");
+	Route::post('getPushList',"NotificationController@getPushList");
+	Route::post('deletePushList',"NotificationController@deletePushList");
 });

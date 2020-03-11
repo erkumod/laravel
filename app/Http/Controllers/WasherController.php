@@ -245,7 +245,7 @@ class WasherController extends Controller
                 $data = array('type'=>"Mini7");
                 $data['user_id'] = $washes->user_id;
                 $data['code'] = Str::random(8);
-                $data['type'] = 'valid';
+                $data['isValid'] = 'valid';
                 $data['expired_at'] =  Carbon::now()->addMonths(6);
                 $stamp = PromoStamps::create($data);
                 $profile->unrewarded_booking = 0;

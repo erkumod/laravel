@@ -241,8 +241,22 @@ class NotificationController extends Controller
         $response->notifications = null;
         $user_id=$request->user()->id;
         if($user_id){
-            $notifications = Notifications::where('user_id',$user_id)->get();
+            $notifications = Notifications::where('user_id',$user_id)->where('user_type',$request->user_type)->get();
             $response->notifications = $notifications;
+            $response->status = 200;
+            $response->message = 'success';
+        }
+        return response()->json($response);
+    }
+    public function deletePushList(Request $request)
+    {
+        $response = new StdClass;
+        $response->status = 400;
+        $response->message = "No current notification";
+        $response->notifications = null;
+        $user_id=$request->user()->id;
+        if($user_id){
+            $notifications = Notifications::where('user_id',$user_id)->where('user_type',$request->user_type)->delete();
             $response->status = 200;
             $response->message = 'success';
         }
