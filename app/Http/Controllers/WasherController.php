@@ -48,7 +48,7 @@ class WasherController extends Controller
         $message = "User not registered as washer.";
         // $wash = CarWashBooking::where('status', 'Accepted')->where('accepted_by', '0')->first();
         $wash = CarWashBooking::
-                                whereDate(\DB::raw("STR_TO_DATE(`start_time`, '%a %b %d %T UTC+00:00 %Y')"), '>=', Carbon::now())->
+                                where(\DB::raw("UNIX_TIMESTAMP(STR_TO_DATE(`start_time`, '%a %b %d %T UTC+00:00 %Y'))"), '>=', \DB::raw('NOW()'))->
                                 // where(, '>', \DB::raw('NOW()'))->
                                 // join('users', 'users.id', '=', 'car_wash_bookings.user_id')
                                 // ->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
