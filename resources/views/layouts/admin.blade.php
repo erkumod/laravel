@@ -196,6 +196,7 @@
                             {{-- <li><a href="{{ url('admin/seo')}}"> <i class="fa fa-file"></i> SEO</a></li> --}}
                             <li><a href="{{ url('admin/cars')}}"> <i class="fa fa-file"></i> Car List</a></li>
                             <li><a href="{{ url('admin/faqs')}}"> <i class="fa fa-file"></i> FAQ List</a></li>
+                            <li><a href="{{ url('admin/privacy')}}"> <i class="fa fa-file"></i> Privacy</a></li>
                             {{-- <li><a href="{{ url('admin/accessories')}}"> <i class="fa fa-cog"></i> Car Accessories</a></li> --}}
                             {{-- <li><a href="{{ url('admin/slider_img')}}"> <i class="fa fa-arrows-h"></i> Slider Images</a></li> --}}
                             {{-- <li><a href="{{ url('admin/services')}}"> <i class="fa fa-cog"></i> Services</a></li> --}}

@@ -20,11 +20,15 @@
 
 			<div class="col-md-6">
 				<h1 style="font-family: berlin;color: #183861; text-align: center;">
-                    {!! $privacy->title !!}
+                    @if(!is_null($privacy))
+                        {!! $privacy->title !!}
+                    @endif
                 </h1>
 				<hr>
                 <div  class="privacytext">
-                    {!! $privacy->description !!}
+                    @if(!is_null($privacy))
+                        {!! $privacy->description !!}
+                    @endif            
                 </div>
 			
 

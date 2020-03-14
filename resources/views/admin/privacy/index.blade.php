@@ -24,11 +24,15 @@
         <div class="row">
             <div class="col-sm-12">
                 <h2>
-                    {!! $privacy->title !!}
+                    @if(!is_null($privacy))
+                        {!! $privacy->title !!}
+                    @endif
                 </h2>
             </div>
             <div class="col-sm-12">
-                {!! $privacy->description !!}
+                @if(!is_null($privacy))
+                    {!! $privacy->description !!}
+                @endif
             </div>
         </div>
     </div>
