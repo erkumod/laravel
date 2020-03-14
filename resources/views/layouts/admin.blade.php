@@ -33,6 +33,7 @@
     <link href={{  asset('css/responsive.css')  }} rel="stylesheet" type="text/css" />
     <link href={{  asset('vendor/dataTables/datatables.min.css')  }} rel="stylesheet" type="text/css" />
     <link href={{  asset('vendor/sweetalert/sweetalert.css')  }} rel="stylesheet" type="text/css" />
+    <link href={{  asset('vendor/summernote/summernote.css')  }} rel="stylesheet" type="text/css" />
     <link href={{  asset('vendor/toastr/toastr.min.css')  }} rel="stylesheet" type="text/css" />
 
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -412,6 +413,9 @@
 
         <!-- Sweetalert init -->
         <script src="{{ asset('vendor/sweetalert/sweetalert.min.js') }}"></script>
+
+        <!-- Summernote init -->
+        <script src="{{ asset('vendor/summernote/summernote.min.js') }}"></script>
 
         <!-- KNOB JS -->
         <!--[if IE]>

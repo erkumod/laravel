@@ -16,7 +16,7 @@ Route::get('/about', 'PagesController@about')->name('about');
 Route::get('/payment', 'PagesController@payment')->name('paymentform');
 Route::get('/TestNotification', 'NotificationController@TestNotification')->name('TestNotification');
 
-Route::post('/submit', 'Formcontroller@submit')->name('paymentform');
+// Route::post('/submit', 'Formcontroller@submit')->name('paymentform');
 
 
 
@@ -59,7 +59,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function() {
 	Route::get('complains', 'AdminController@complain');
 	Route::get('/washer/{id}', 'WasherController@viewwasherdetails');
 	Route::get('/activatewasher/{id}', 'WasherController@approvewasherdetails');
-	Route::resource('seo', 'SeoController');
+	// Route::resource('seo', 'SeoController');
 	Route::get('requests', 'AdminController@request');
 	Route::get('callbacks', 'AdminController@callback');
 	Route::get('ondemand', 'AdminController@ondemand');
@@ -80,8 +80,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function() {
 	Route::resource('car_wash', 'CarwashController');
 	// Route::resource('car_service', 'CarservicingController');
 	Route::resource('cars', 'CarController');
-	Route::resource('feedbacks', 'FeedbackController');
-	Route::resource('accessories', 'CaraccessoriesController');
+	// Route::resource('feedbacks', 'FeedbackController');
+	// Route::resource('accessories', 'CaraccessoriesController');
 	Route::resource('brands', 'BrandController');
 	Route::resource('carmodels', 'ModelController');
 	Route::get('getmodel/{brand_id}', 'AdminController@model_data');
@@ -90,6 +90,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function() {
 	Route::get('sendsms', 'AdminController@showsendsms');
 	Route::get('pendingorder', 'AdminController@pendingorder');
 	Route::resource('promocode', 'PromoCodeAdminController');
+	Route::resource('privacy', 'PrivacyController');
 	Route::post('sendsms', 'AdminController@sendsms');
 	// Route::get('vehicle_types', 'AdminController@showvehiclelist');
 	// Route::resource('vehicle_types', 'VehicleAdminController');
@@ -104,7 +105,7 @@ Route::get('tnc', 'TermController@showtnc');
 // for Privacy
 Route::get('privacy', 'TermController@showprivacy');
 
-Route::get('addmoney/stripe', array('as' => 'addmoney.paywithstripe','uses' => 'AddMoneyController@payWithStripe'));
-Route::post('addmoney/stripe', array('as' => 'addmoney.stripe','uses' => 'AddMoneyController@postPaymentWithStripe'));
+// Route::get('addmoney/stripe', array('as' => 'addmoney.paywithstripe','uses' => 'AddMoneyController@payWithStripe'));
+// Route::post('addmoney/stripe', array('as' => 'addmoney.stripe','uses' => 'AddMoneyController@postPaymentWithStripe'));
 Route::get ( '/redirect/{service}', 'SocialLoginController@redirectToProvider' );
 Route::get ( '/callback/{service}', 'SocialLoginController@callback' );

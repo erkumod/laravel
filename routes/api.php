@@ -52,7 +52,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('complaint'       , 'AppController@Complaintraise');
 	Route::post('support'         , 'AppController@Support');
 	
-	Route::post('wallet_balance'         , 'WalletController@getBalance');
+	// Route::post('wallet_balance'         , 'WalletController@getBalance');
 	Route::post('washer_request'         , 'UserController@washerRequest');
 	Route::get('available_washes'         , 'WasherController@availableWashes');
 	Route::get('washer_history'         , 'WasherController@availableWashes');
@@ -98,7 +98,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('create_epin', 'UserApiController@create_epin');
 	Route::post('validate_otp', 'AuthApiController@validateOTP');
 	Route::get('otp', 'AuthApiController@sendOTP');
-	Route::get('my_transactions'         , 'WalletController@getTransactions');
+	// Route::get('my_transactions'         , 'WalletController@getTransactions');
 	Route::get('package', 'AppController@get_package');
 	Route::get('my_orders'         , 'UserController@viewMyorders');
 	Route::get('my_pending_orders'         , 'UserController@viewPendingOrder');
@@ -114,15 +114,15 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::get('orders', 'UserController@myorders');
 	Route::get('promocodelist', 'PromoController@promocodelist');
 	Route::get('promocode', 'PromoController@validatePromoCode');
-	Route::post('get_hash', 'WalletController@createHash');
+	// Route::post('get_hash', 'WalletController@createHash');
 	Route::post('request_callback', 'UserController@request_callback');
 	Route::post('profile_pic', 'UserController@profilepic');
 
 
-	Route::post('payment/status', 'PayTMController@paymentCallback');
-	Route::post('paytm/generatechecksum', 'PaytmAppController@generatechecksum');
-	Route::post('paytm/verifychecksum', 'PaytmAppController@verifychecksum');
-	Route::post('paytm/verifytransaction', 'PaytmAppController@verifytransaction');
+	// Route::post('payment/status', 'PayTMController@paymentCallback');
+	// Route::post('paytm/generatechecksum', 'PaytmAppController@generatechecksum');
+	// Route::post('paytm/verifychecksum', 'PaytmAppController@verifychecksum');
+	// Route::post('paytm/verifytransaction', 'PaytmAppController@verifytransaction');
 
 
 
