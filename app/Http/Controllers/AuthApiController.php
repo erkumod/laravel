@@ -141,7 +141,7 @@ class AuthApiController extends Controller
                 return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 200);
             }
             else{
-                return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);        
+                return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);
             }
         }
         else{
@@ -153,7 +153,8 @@ class AuthApiController extends Controller
         $validator = Validator::make($credentials, $rules);
         $user = User::where('email', $request->email)->where('provider_id', $request->provider_id)->first();
         if(isset($user) && $token = JWTAuth::fromUser($user)){
-            return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
+            return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);
+            // return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
         }
         $rules = [
             'name' => 'required|max:255',
@@ -186,12 +187,16 @@ class AuthApiController extends Controller
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
             }
             else{
-                return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
+                return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);
+                
+                // return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
             }
             
             return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
         }        
-        return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
+        return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);
+
+        // return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
         }
     }
     /**
