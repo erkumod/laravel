@@ -193,6 +193,7 @@ class PromoStampsController extends Controller
             $booking_counts =  Profile::where('user_id',$request->user()->id)->first()->unrewarded_booking;
             $message = 'Data fetched';
             $response->booking_count = $booking_counts ?? 0;
+            $terms = array();
             for ($i=0; $i < 5; $i++) { 
                 array_push($terms, "This is condition $i");
             }
