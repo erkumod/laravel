@@ -126,25 +126,25 @@ class AuthApiController extends Controller
     {
         $credentials = $request->only('name', 'mobile',  'email', 'provider_id');
         $idTokenString = $request->provider_id;
-        $user = app('firebase.auth')->verifyIdToken($idTokenString);
-        dd($user);
+        // $user = app('firebase.auth')->verifyIdToken($idTokenString);
+        // dd($user);
         // $user = User::where('provider_id', $request->provider_id)->first();
-        // $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
         // // $password = 'password123';
         $provider = $request->provider;
-        // if ($user){
-        //     $user->provider_id = $request->provider_id;
-        //     $user->provider = $provider;
-        //     $user->update();
+        if ($user){
+            $user->provider_id = $request->provider_id;
+            $user->provider = $provider;
+            $user->update();
 
-        //     if (!$token = JWTAuth::fromUser($user)) {
-        //         return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 200);
-        //     }
-        //     else{
-        //         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);        
-        //     }
-        // }
-        // else{
+            if (!$token = JWTAuth::fromUser($user)) {
+                return response()->json(['success' => false, 'error' => 'We cant  an account with this credentials.'], 200);
+            }
+            else{
+                return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);        
+            }
+        }
+        else{
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
@@ -192,7 +192,7 @@ class AuthApiController extends Controller
             return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
         }        
         return response()->json(['success' => true, 'data'=> [ 'token' => $token]]);    
-        // }
+        }
     }
     /**
      * Log out
