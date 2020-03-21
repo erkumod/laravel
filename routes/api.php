@@ -38,6 +38,9 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::get('vehicle_color', 'Api\VehicleColorController@index');
 	Route::get('profile_info', 'UserController@profileinfo');
 	Route::post('update_info', 'UserController@editprofileinfo');
+	Route::post('editEmail', 'UserController@editEmail');
+	Route::post('verifyEmailOtp', 'UserController@verifyEmailOtp');
+	Route::post('editMobileNumber', 'UserController@editMobileNumber');
 
 	Route::get('account_settings', 'UserApiController@accountsetting');
 	Route::post('account_settings', 'UserApiController@editaccountsetting');

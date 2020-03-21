@@ -14,6 +14,9 @@ use App\WasherDetails;
 use App\PaymentCard;
 use App\Notifications;
 use App\UserNotification;
+use App\Mail\PasswordResetOtp;
+use Mail;
+use Carbon\Carbon;
 use StdClass;
 use DB;
 use Image;
@@ -62,6 +65,95 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success','User created successfully');
     }
+
+    public function editEmail(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $rules = [
+            'email' => 'required',
+        ];
+        $validator = Validator::make([
+            'email' => $request->email,
+        ], $rules);
+        if($validator->fails()) {
+            return response()->json(['success'=> false, 'error'=> "Please validate before sending"],200);
+        }
+        $userId = $request->user()->id;
+        $email_token = base64_encode($request->email);
+        $user = User::where('id',$userId)->first(); //get User table entry
+        if($user){
+            $randphone = mt_rand(10000, 99999);
+            $user->remember_token = $randphone;
+            $message = "Your OTP is $randphone.Please use this to verify email.";
+            try {
+                $user->email = $request->email;
+                $user->email_verified_at = null;
+                Mail::to($request->email)->send(new PasswordResetOtp($message));
+                $user->update();
+                $message = "Email updated & send verification mail";
+                $status = 200;
+            } catch (\Throwable $th) {
+                $message = "Something went wrong. Please try again after sometime";
+                $status = 401;
+                //throw $th;
+            }
+    
+                
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);
+    }
+
+    public function verifyEmailOtp(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $user = User::where('email',$request->email)->first();
+        if ($user){
+            if (isset($user->remember_token) && $request->otp == $user->remember_token){
+                $user->email_verified_at = Carbon::now();
+                $user->email_verification = 'Verified';
+                $user->update();
+                $status = 200;
+                $message = "User Email verified";
+            }
+            else {
+                $status = 200;
+                $message = "Otp Missmatch";
+            }
+        }
+        else {
+            $status = 200;
+            $message = "User Not Found";
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);
+    }
+
+    public function editMobileNumber(Request $request)
+    {
+        $rules = [
+            'mobile' => 'required',
+        ];
+        $validator = Validator::make([
+            'mobile' => $request->mobile,
+        ], $rules);
+        if($validator->fails()) {
+            return response()->json(['success'=> false, 'error'=> "Please validate before sending"],200);
+        }
+        $userId = $request->user()->id;
+        $input = $request->only('mobile');
+        $user = User::where('id',$userId)->update($input); //Create User table entry
+        return response()->json([
+            'success' => true, 'data'=> ['message'=> 'Mobile updated']
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *
