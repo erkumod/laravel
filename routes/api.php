@@ -40,6 +40,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('update_info', 'UserController@editprofileinfo');
 	Route::post('editEmail', 'UserController@editEmail');
 	Route::post('verifyEmailOtp', 'UserController@verifyEmailOtp');
+	Route::post('verifyMobileOtp', 'UserController@verifyMobileOtp');
 	Route::post('editMobileNumber', 'UserController@editMobileNumber');
 
 	Route::get('account_settings', 'UserApiController@accountsetting');
@@ -155,4 +156,5 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('getMessages',"BookingChatController@getMessages");
 	Route::post('getPushList',"NotificationController@getPushList");
 	Route::post('deletePushList',"NotificationController@deletePushList");
+	Route::post('washerAccountDetail',"WasherBankDetailController@store");
 });

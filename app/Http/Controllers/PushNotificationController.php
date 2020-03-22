@@ -41,10 +41,14 @@ class PushNotificationController extends Controller
         $response->status = 400;
         $user_id = $request->user_id ??$request->user()->id;
         $notification_token = $request->notification_token;
+        $os = isset($request->os) && !is_null($request->os) ? $request->os : 'android';  
         if($user_id && $notification_token){
             $data = PushNotification::updateOrCreate(
                 ['user_id' => $user_id],
-                ['notification_token' => $notification_token]
+                [
+                    'notification_token' => $notification_token,
+                    'os' => $os
+                ]
             );
             $message = 'Token added';
             $response->status = 200;

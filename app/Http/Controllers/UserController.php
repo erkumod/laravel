@@ -14,6 +14,7 @@ use App\WasherDetails;
 use App\PaymentCard;
 use App\Notifications;
 use App\UserNotification;
+use App\WasherBankDetail;
 use App\Mail\PasswordResetOtp;
 use Mail;
 use Carbon\Carbon;
@@ -146,12 +147,68 @@ class UserController extends Controller
         if($validator->fails()) {
             return response()->json(['success'=> false, 'error'=> "Please validate before sending"],200);
         }
+
         $userId = $request->user()->id;
-        $input = $request->only('mobile');
-        $user = User::where('id',$userId)->update($input); //Create User table entry
-        return response()->json([
-            'success' => true, 'data'=> ['message'=> 'Mobile updated']
-        ]);
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $id = $request->mobile;
+        $user = User::where('id', $userId)->first();
+        $randphone = mt_rand(10000, 99999);
+        if($user){
+
+            $mobile = $user->country_code.$request->mobile;
+            $user->remember_token = $randphone;
+            $user->update(); 
+            $message = "Your%20OTP%20is%20$randphone.%20Please%20use%20this%20otp%20to%20reset%20your%20password.";
+            $url = "http://103.16.101.52:8080/sendsms/bulksms?username=bcks-imzhnd&password=Super123&type=0&dlr=1&destination=$mobile&source=BSSPLI&message=$message";
+            $c = curl_init();
+            curl_setopt($c,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($c,CURLOPT_HTTPGET ,1);
+            curl_setopt($c, CURLOPT_URL, $url);
+            $contents = curl_exec($c);
+            if (curl_errno($c)) {
+                $message = "Sms not sent";
+                $status = 400;
+            }else{
+                curl_close($c);
+                $message = "Sms sent";
+                $status = 200;
+            }
+        }
+        $response->status = $status;
+        $response->otp = (string) $randphone;
+        $response->message = $message;
+        return response()->json($response);
+    }
+
+    public function verifyMobileOtp(Request $request)
+    {
+        $response = new StdClass;
+        $status = 400;
+        $message = "Something Went Wrong";
+        $user = User::where('id',$request->user()->id)->first();
+        if ($user){
+            if (isset($user->remember_token) && $request->otp == $user->remember_token){
+                $user->mobile_verified_at = Carbon::now();
+                $user->mobile_verification = 'Verified';
+                $user->mobile = $request->mobile;
+                $user->update();
+                $status = 200;
+                $message = "User mobile number changed";
+            }
+            else {
+                $status = 200;
+                $message = "Otp Missmatch";
+            }
+        }
+        else {
+            $status = 200;
+            $message = "User Not Found";
+        }
+        $response->status = $status;
+        $response->message = $message;
+        return response()->json($response);
     }
 
     /**
@@ -239,6 +296,7 @@ class UserController extends Controller
                 $profile = Profile::create(['user_id' => $id,'dob' => $request->dob,'gender' => $request->gender, 'profession' => $request->profession]);
                 $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
             }
+            $user->washer = WasherBankDetail::where('user_id',$id)->first();
             $car_brand_id = '';
             $car_model_id = '';
             if($userProfileData){
