@@ -203,7 +203,7 @@ class NotificationController extends Controller
                     $deviceToken  = $notification_token;            
                     $passphrase = '123456';				
                     $ctx = stream_context_create();
-                    $ckName = "ck_distri.pem";
+                    $ckName = "ck.pem";
                     
                     stream_context_set_option($ctx, 'ssl', 'local_cert', $ckName);
                     stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
