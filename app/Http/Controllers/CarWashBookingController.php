@@ -170,7 +170,7 @@ class CarWashBookingController extends Controller
     $status = 400;
     $message = "Something Went Wrong!!!";
     $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::with(['washer_profile','washers:id,name','unread_message_user'])->
+    $mybooking = CarWashBooking::with(['washer_profile','unread_message_user','washers:id,name'])->
     // leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
     // ->select('car_wash_bookings.*', 'payment_cards.card_no')
     where('car_wash_bookings.user_id', $user_id)
