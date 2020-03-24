@@ -82,9 +82,9 @@ class BookingChatController extends Controller
             $response->status = 200;
             $response->message = 'success';
             if($request->user_type == "washer"){
-                BookingChat::where('booking_id',$booking_id)->where('is_washer',1)->update(['flag' => 'read']);
+                BookingChat::where('booking_id',$booking_id)->update(['washer_flag' => 'read']);
             }else{
-                BookingChat::where('booking_id',$booking_id)->where('is_washer',0)->update(['flag' => 'read']);
+                BookingChat::where('booking_id',$booking_id)->update(['flag' => 'read']);
             }
         }
         return response()->json($response);
