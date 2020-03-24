@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/TestNotification', 'NotificationController@TestNotification')->name('TestNotification');
+Route::post('/TestIosNotification', 'NotificationController@TestIosNotification')->name('TestIosNotification');
 Route::post('register', 'AuthApiController@register');
 Route::post('login', 'AuthApiController@login');
 Route::post('logintest', 'AuthApiController@googleloginfun');

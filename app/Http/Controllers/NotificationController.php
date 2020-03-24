@@ -171,6 +171,38 @@ class NotificationController extends Controller
         return response()->json(["message" => 'Notification deleted!'], 200);
     }
 
+    public function TestIosNotification(Request $request)
+    {
+        // $registatoin_ids = array();
+        // $gcm_regid = $request->user()->id;
+        $notification_token = "e376feaaf1d3bebc94edbc0c467627cc2091e372882530e186d813c8d868bae9";
+        // $apns_user_id = $user_id;
+        // $deviceToken  = $notification_token;            
+        $passphrase = '123456';				
+        $ctx = stream_context_create();
+        $ckName = "/var/www/swipe-web/ck.pem";
+        
+        stream_context_set_option($ctx, 'ssl', 'local_cert', $ckName);
+        stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
+        $fp = stream_socket_client(
+                'ssl://gateway.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
+        
+        if (!$fp)
+            exit("Failed to connect: $err $errstr" . PHP_EOL);
+        $counter = 1;
+        $body['aps'] = array('sound'=>"default",'alert' => "test",'badge'=>$counter);
+        $payload = json_encode($body);
+
+        $msg = chr(0) . pack('n', 32) . pack('H*', $notification_token) . pack('n', strlen($payload)) . $payload;			
+        $result = fwrite($fp, $msg, strlen($msg));
+        
+        if (!$result)
+            return 'Message not delivered - Customer' . PHP_EOL;
+        else
+            return 'Message successfully delivered - Customer' . PHP_EOL;
+        fclose($fp);
+    }
+
     public function TestNotification(Request $request)
     {
         $registatoin_ids = array();
