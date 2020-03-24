@@ -81,7 +81,11 @@ class BookingChatController extends Controller
             $response->messageRes = $messageRes;
             $response->status = 200;
             $response->message = 'success';
-            BookingChat::where('booking_id',$booking_id)->update(['flag' => 'read']);
+            if($request->user_type == "washer"){
+                BookingChat::where('booking_id',$booking_id)->where('is_washer',1)->update(['flag' => 'read']);
+            }else{
+                BookingChat::where('booking_id',$booking_id)->where('is_washer',0)->update(['flag' => 'read']);
+            }
         }
         return response()->json($response);
     }
