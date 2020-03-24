@@ -62,4 +62,12 @@ class CarWashBooking extends Model
         return $this->hasOne('App\User', 'id', 'accepted_by');
     }
 
+    public function unread_message_user(){
+        return $this->hasMany('App\BookingChat','booking_id','id')->where('flag','unread');
+    }
+
+    public function unread_message_washer(){
+        return $this->hasMany('App\BookingChat','booking_id','id')->where('washer_flag','unread');
+    }
+
 }

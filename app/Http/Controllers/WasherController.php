@@ -91,7 +91,7 @@ class WasherController extends Controller
         $message = "User not registered as washer.";
         Config::set('lat', $request->lat);
         Config::set('lon', $request->lon);
-        $washes = CarWashBooking::
+        $washes = CarWashBooking::with('unread_message_washer')->
         where('accepted_by', $request->user()->id)->whereIn('status', ['Accepted','Started'])->orderBy('updated_at','desc')->get();
         // join('users', 'users.id', '=', 'car_wash_bookings.user_id')->join('my_cars','my_cars.id','car_wash_bookings.vehicle_id')
         // ->join('carmodels','carmodels.id','my_cars.car_model')
