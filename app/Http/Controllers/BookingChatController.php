@@ -53,6 +53,7 @@ class BookingChatController extends Controller
                 'message' => $message,
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
+                'flag' => 'unread',
                 'is_washer' => $is_washer,
                 'sender_id' => $sender_id,
             );
@@ -80,6 +81,7 @@ class BookingChatController extends Controller
             $response->messageRes = $messageRes;
             $response->status = 200;
             $response->message = 'success';
+            BookingChat::where('booking_id',$booking_id)->update(['flag' => 'read']);
         }
         return response()->json($response);
     }

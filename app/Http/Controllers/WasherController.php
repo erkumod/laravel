@@ -185,6 +185,7 @@ class WasherController extends Controller
                 'message' => $msg,
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
+                'flag' => 'unread',
                 'is_washer' => true,
                 'sender_id' => $sender_id,
             );
