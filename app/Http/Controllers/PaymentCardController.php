@@ -21,10 +21,23 @@ class PaymentCardController extends Controller
             'name'        => 'required',
                
         ]);       
-
+		try {
+			$stripe_card = Stripe::sources()->create([
+				'type' => 'ach_credit_transfer',
+				'token' => $request->stripe_card_id,
+				'usage' => 'reusable',
+				'owner' => [
+					'email' => $request->user()->email
+				],
+			]); 
+		} catch (\Throwable $th) {
+			$response->status = 400;
+			$response->message = "Please enter valid card detail and try again";
+			return response()->json($response);     
+		}
         $mycard = new PaymentCard;
-        $mycard->card_no      = $request->card_no;
-        $mycard->stripe_card_id      = $request->stripe_card_id;
+		$mycard->card_no      = $request->card_no;
+        $mycard->stripe_card_id      = $stripe_card['id'];
         $mycard->expiry_month      = $request->expiry_month;
         $mycard->status        = $request->status;
         $mycard->expiry_year      = $request->expiry_year;

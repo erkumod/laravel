@@ -11,6 +11,7 @@ use App\PromoCode;
 use App\PromoStamps;
 use App\Profile;
 use StdClass;
+use Stripe;
 use Validator;
 use Carbon\Carbon;
 
@@ -60,66 +61,85 @@ class CarWashBookingController extends Controller
             ['id', '=', $request->card_id]
         ])->first();
         // dd($vehicle);
-        $mybooking = new CarWashBooking;
-        $mybooking->location      = $request->location;
-        $mybooking->vehicle_id      = $request->vehicle_id;
-        $mybooking->user_id        = $user_id;        
-        $mybooking->date        = Carbon::parse($request->date)->format('Y-m-d');
-        $mybooking->start_time        = $request->start_time;    
-        $mybooking->end_time        = $request->end_time;        
-        $mybooking->card_id        = $request->card_id;        
-        $mybooking->lot_no        = $request->lot_no;        
-        $mybooking->fare        = $request->fare;        
-        $mybooking->payment_type        = $request->payment_type; 
-        $mybooking->lat             = $request->lat??0; 
-        $mybooking->lon             = $request->lon??0; 
-        $mybooking->notes        = $notes;
-        $mybooking->isPromo        = false;
-        $mybooking->job_code        = Carbon::now()->timestamp."-".$user_id."-".$request->date."-".$request->lot_no;
-        if(!is_null($card)){
-            $mybooking->card_no        = $card->card_no;
-            $mybooking->card_type        = $card->card_type;
-        }
-        $mybooking->user_name = $request->user()->name;
-        $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $request->vehicle_id)->first();
-        if(!is_null($vehicle)){
-            $mybooking->model_name = $vehicle->model_name;
-            $mybooking->brand_name = $vehicle->brand_name;
-            $mybooking->vehicle_no = $vehicle->vehicle_no;
-            $mybooking->brand_img = $vehicle->brand_img;
-            $mybooking->car_image = $vehicle->car_image;
-            $mybooking->brand_id = $vehicle->brand_id;
-            $mybooking->model_img = $vehicle->model_img;
-            $mybooking->model_desc = $vehicle->model_desc;
-            $mybooking->color_code = $vehicle->color_code;
-            $mybooking->color_name = $vehicle->color_name;
-            $mybooking->type = $vehicle->type;
-        }
-        // $profile = Profile::where('user_id',$user_id)->first();
-        // dd($profile);\
-        if(!is_null($request->promo)){
-            $promoCode = $request->promo;
-            $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
-            if(!$stamp){
-                $mybooking->isPromo        = false;  
-            }else{
-                $stamp->isValid = 'used';
-                $mybooking->booking_promp        = $request->promo;  
-                $mybooking->isPromo        = true;
-                $stamp->save();
+        $profile = Profile::where('user_id',$user_id)->first();
+        
+        $charge = Stripe::charges()->create([
+            'customer' => $profile->customer_key,
+            'currency' => 'INR',
+            'amount'   => $request->fare,
+            'source' => $card->stripe_card_id,
+            'capture' => true
+        ]);
+        if($charge['amount_refunded'] == 0 && empty($charge['failure_code']) && $charge['paid'] == 1 && $charge['captured'] == 1)
+        {
+            $mybooking = new CarWashBooking;
+            $mybooking->payment_status = "paid";
+            $mybooking->charge_id = $charge['id'];
+            $mybooking->location      = $request->location;
+            $mybooking->vehicle_id      = $request->vehicle_id;
+            $mybooking->user_id        = $user_id;        
+            $mybooking->date        = Carbon::parse($request->date)->format('Y-m-d');
+            $mybooking->start_time        = $request->start_time;    
+            $mybooking->end_time        = $request->end_time;        
+            $mybooking->card_id        = $request->card_id;        
+            $mybooking->lot_no        = $request->lot_no;        
+            $mybooking->fare        = $request->fare;        
+            $mybooking->payment_type        = $request->payment_type; 
+            $mybooking->lat             = $request->lat??0; 
+            $mybooking->lon             = $request->lon??0; 
+            $mybooking->notes        = $notes;
+            $mybooking->isPromo        = false;
+            $mybooking->job_code        = Carbon::now()->timestamp."-".$user_id."-".$request->date."-".$request->lot_no;
+            if(!is_null($card)){
+                $mybooking->card_no        = $card->card_no;
+                $mybooking->card_type        = $card->card_type;
             }
-            
+            $mybooking->user_name = $request->user()->name;
+            $vehicle = MyCar::join('carmodels', 'carmodels.id', '=', 'my_cars.car_model')->join('brands', 'brands.id', '=', 'my_cars.car_brand')->where('my_cars.id', $request->vehicle_id)->first();
+            if(!is_null($vehicle)){
+                $mybooking->model_name = $vehicle->model_name;
+                $mybooking->brand_name = $vehicle->brand_name;
+                $mybooking->vehicle_no = $vehicle->vehicle_no;
+                $mybooking->brand_img = $vehicle->brand_img;
+                $mybooking->car_image = $vehicle->car_image;
+                $mybooking->brand_id = $vehicle->brand_id;
+                $mybooking->model_img = $vehicle->model_img;
+                $mybooking->model_desc = $vehicle->model_desc;
+                $mybooking->color_code = $vehicle->color_code;
+                $mybooking->color_name = $vehicle->color_name;
+                $mybooking->type = $vehicle->type;
+            }
+                // $profile = Profile::where('user_id',$user_id)->first();
+                // dd($profile);\
+            if(!is_null($request->promo)){
+                $promoCode = $request->promo;
+                $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
+                if(!$stamp){
+                    $mybooking->isPromo        = false;  
+                }else{
+                    $stamp->isValid = 'used';
+                    $mybooking->booking_promp        = $request->promo;  
+                    $mybooking->isPromo        = true;
+                    $stamp->save();
+                }
+                
+            }
+            $mybooking->save();
+            if ($mybooking){
+                $response->mybooking = $mybooking;
+                $status = 200;
+                $message = "Car wash booking saved Successfully";
+            }
+            else{ 
+                $is_success = 400; $message = "Something went wrong";
+            }
+            $response->status = $status;
+            $response->message = $message;
+            $response->nexturl = url("/paymentgateway");
+        }else{
+            $is_success= 400;
+            $message = "Payment failure";
         }
-        $mybooking->save();
-        if ($mybooking){
-            $response->mybooking = $mybooking;
-            $status = 200;
-            $message = "Car wash booking saved Successfully";
-        }
-
-        $response->status = $status;
-        $response->message = $message;
-        $response->nexturl = url("/paymentgateway");
         return response()->json($response);     
     }
 
