@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use StdClass;
 use DB;
 use Image;
+use Stripe;
 use Hash;
 use File;
 use Validator;
@@ -333,6 +334,14 @@ class UserController extends Controller
                 $user->primary_card = $userProfileData->PrimaryCard;
                 $user->upvote_count = $userProfileData->upvote_count;
                 $user->downvote_count = $userProfileData->downvote_count;
+                if(is_null($userProfileData->customer_key)){
+                    $customer = Stripe::customers()->create([
+                        'email' => $request->user()->email,
+                    ]);
+                    $userProfileData->customer_key = $customer['id'];
+                    $userProfileData->save();
+                }
+                $user->customer_key = $userProfileData->customer_key;
             }else{
                 $user->primary_car =  null;
                 $user->primary_card = null;
