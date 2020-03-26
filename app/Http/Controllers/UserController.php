@@ -336,7 +336,10 @@ class UserController extends Controller
                 $user->downvote_count = $userProfileData->downvote_count;
                 if(is_null($userProfileData->customer_key)){
                     $customer = Stripe::customers()->create([
+                        'name' => $request->user()->name,
+                        'description' => 'test description',
                         'email' => $request->user()->email,
+                        "address" => ["city" => "test", "country" => "IN", "line1" => "test", "line2" => "", "postal_code" => "361220", "state" => "GUJ"],
                     ]);
                     $userProfileData->customer_key = $customer['id'];
                     $userProfileData->save();

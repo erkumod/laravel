@@ -62,14 +62,21 @@ class CarWashBookingController extends Controller
         ])->first();
         // dd($vehicle);
         $profile = Profile::where('user_id',$user_id)->first();
-        
-        $charge = Stripe::charges()->create([
-            'customer' => $profile->customer_key,
-            'currency' => 'INR',
-            'amount'   => $request->fare,
-            'source' => $card->stripe_card_id,
-            'capture' => true
-        ]);
+        try {
+            //code...
+            $charge = Stripe::charges()->create([
+                'customer' => $profile->customer_key,
+                'currency' => 'INR',
+                'amount'   => $request->fare,
+                'source' => $card->stripe_card_id,
+                'capture' => true,
+                'description' => 'Swipe Booking',
+            ]);
+        } catch (\Throwable $th) {
+            $response->status = 400;
+            $response->message = "something went wrong! please try again later";
+            return response()->json($response);   
+        }
         if($charge['amount_refunded'] == 0 && empty($charge['failure_code']) && $charge['paid'] == 1 && $charge['captured'] == 1)
         {
             $mybooking = new CarWashBooking;

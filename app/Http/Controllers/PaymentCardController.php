@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\PaymentCard;
+use App\Profile;
 use StdClass;
 use Validator;
+use Stripe;
 
 class PaymentCardController extends Controller
 {
@@ -22,15 +24,19 @@ class PaymentCardController extends Controller
                
         ]);       
 		try {
+			$profile = Profile::where('user_id',$user_id)->first();
 			$stripe_card = Stripe::sources()->create([
-				'type' => 'ach_credit_transfer',
+				'type' => 'card',
 				'token' => $request->stripe_card_id,
 				'usage' => 'reusable',
 				'owner' => [
 					'email' => $request->user()->email
 				],
 			]); 
+			$source = Stripe::sources()->attach($profile->customer_key, $stripe_card['id']);
+			// "",
 		} catch (\Throwable $th) {
+			\Log::info($th);
 			$response->status = 400;
 			$response->message = "Please enter valid card detail and try again";
 			return response()->json($response);     
