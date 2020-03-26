@@ -24,6 +24,7 @@ class PaymentCardController extends Controller
 
         $mycard = new PaymentCard;
         $mycard->card_no      = $request->card_no;
+        $mycard->stripe_card_id      = $request->stripe_card_id;
         $mycard->expiry_month      = $request->expiry_month;
         $mycard->status        = $request->status;
         $mycard->expiry_year      = $request->expiry_year;
