@@ -230,11 +230,15 @@ class WasherController extends Controller
                 Image::make($completeImage2)->resize(300, 300)->save(public_path($filename));
                 $washes->booking_complete_image2 =$filename;
             }
+            // try {
+            //     $paymentIntent = Stripe::paymentIntents()->capture($washes->charge_id);
+            //     if($charge['charges']['data'][0]['amount_refunded'] == 0){
+            //         $washes->payment_status = "paid";
+            //     }
+            // } catch (\Throwable $th) {
+            //     $washes->payment_status = "unpaid";
+            // }
             $washes->update(); 
-            try {
-                $paymentIntent = Stripe::paymentIntents()->capture($washes->charge_id);
-            } catch (\Throwable $th) {
-            }
             $response->accepted_wash = $washes;
             $profile = Profile::where('user_id',$washes->user_id)->first();
             // $profile = Profile::where('user_id',$user_id)->first();
