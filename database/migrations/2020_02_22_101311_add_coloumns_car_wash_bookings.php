@@ -14,15 +14,7 @@ class AddColoumnsCarWashBookings extends Migration
     public function up()
     {
         Schema::table('car_wash_bookings', function (Blueprint $table) {
-            $table->string('user_name')->nullable();
-            $table->string('model_name')->nullable();
-            $table->bigInteger('brand_id')->nullable();
-            $table->string('model_img')->nullable();
-            $table->string('brand_name')->nullable();
-            $table->string('vehicle_no')->nullable();
-            $table->string('brand_img')->nullable();
-            $table->string('car_image')->nullable();
-            $table->string('color_code')->nullable();
+           $table->string('color_code')->nullable();
             $table->string('color_name')->nullable();
             $table->text('model_desc')->nullable();
             $table->string('type')->nullable();

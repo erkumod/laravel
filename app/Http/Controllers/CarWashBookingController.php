@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\CarWashBooking;
 use App\PushNotification;
-use App\MyCar;
-use App\PaymentCard;
-use App\PromoCode;
-use App\PromoStamps;
+
 use App\Profile;
 use StdClass;
 use Stripe;
@@ -17,18 +14,7 @@ use Carbon\Carbon;
 
 class CarWashBookingController extends Controller
 {
-    public function addcarwashbooking(Request $request){
-        $user_id = $request->user()->id;
-        \Log::info("This is a message from a controller");
-        \Log::info(print_r($request->toArray(), true));
-        \Log::info($user_id);
-        $response = new StdClass;
-        $status = 400;
-        $message = "Something Went Wrong!!!";
-        $start_time =  Carbon::parse($request->start_time)->setTimezone('UTC');
-        $end_time =  Carbon::parse($request->end_time)->setTimezone('UTC');
-        $time = Carbon::now("UTC");
-        $validator = Validator::make($request->all(), [
+    public function addcarwashbooking(Request $request){ke($request->all(), [
             'vehicle_id'        => 'required',
             'card_id'           => 'required',
             'date'              => 'required',
@@ -55,40 +41,7 @@ class CarWashBookingController extends Controller
         $notes = 'No special notes';
         if ($request->notes!=null){
             $notes = $request->notes;
-        }
-        $card = PaymentCard::where([
-            ['user_id', '=', $user_id],
-            ['id', '=', $request->card_id]
-        ])->first();
-        // dd($vehicle);
-        $profile = Profile::where('user_id',$user_id)->first();
-        try {
-            //code...
-            // $charge = Stripe::charges()->create([
-            //     'customer' => $profile->customer_key,
-            //     'currency' => 'INR',
-            //     'amount'   => $request->fare,
-            //     'source' => $card->stripe_card_id,
-            //     'capture' => true,
-            //     'description' => 'Swipe Booking',
-            // ]);
-            $charge = Stripe::paymentIntents()->create([
-                'amount' => $request->fare,
-                'currency' => 'INR',
-                'payment_method_types' => [
-                    'card',
-                ],
-                'customer' => $profile->customer_key,
-                'capture_method' => 'manual'
-            ]);
-            $charge = Stripe::paymentIntents()->confirm( $charge['id'], [
-                'payment_method' => $card->stripe_card_id,
-            ]);
-        } catch (\Throwable $th) {
-            $response->status = 400;
-            $response->message = "something went wrong! please try again later";
-            return response()->json($response);   
-        }
+
         if($charge['charges']['data'][0]['amount_refunded'] == 0 && empty($charge['charges']['data'][0]['failure_code']) && $charge['charges']['data'][0]['paid'] == 1)
         {
             $mybooking = new CarWashBooking;
@@ -164,54 +117,11 @@ class CarWashBookingController extends Controller
 
     public function cancelcarwashbooking(Request $request){
         $user_id = $request->user()->id;
-        $response = new StdClass;
         $status = 400;
         $message = "No Booking Found!!!";
        
 
-        $mybooking = CarWashBooking::where('id', $request->wash_id)->where('user_id', $user_id)->first();
-        if ($mybooking){
-            if($mybooking->status == 'Started' || $mybooking->status == 'Cancelled'){
-                $message = "Car wash booking can not cancel Or already cancled";
-                $response->status = '';
-                $response->message = $message;
-                return response()->json($response);
-            }
-            $mybooking->status      = 'Cancelled';
-            $promoCode = $mybooking->booking_promp;
-            $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','used')->first();
-            $push = "Sorry, the booking has been cancelled by vehicle owner. Please select another booking.";
-            $result = NotificationController::sendPushNotification($push,'cancle_booking',$mybooking->accepted_by,'Booking','washer');
-            if($stamp){
-                $stamp->isValid = "valid";
-                $stamp->save();
-            }
-            // dd($stamp);
-            $mybooking->update();
-            $status = 200;
-            $message = "Car wash booking cancelled successfully";
-            // if($mybooking->isPromo == true){
-            //     $profile = Profile::where('user_id',$user_id)->first();
-            //     $profile->unrewarded_booking -= 1;
-            //     $profile->total_booking -= 1;
-            //     $profile->save();
-            // }
-        }
-
-        $response->status = $status;
-        $response->message = $message;
-        return response()->json($response);     
-    } 
-
- public function viewMyCarWashBooking(Request $request)
- {
-    $response = new StdClass;
-    $status = 400;
-    $message = "Something Went Wrong!!!";
-    $user_id = $request->user()->id;
-    $mybooking = CarWashBooking::with(['washer_profile','unread_message_user','washers:id,name'])->
-    // leftJoin('payment_cards', 'payment_cards.id', '=', 'car_wash_bookings.card_id')
-    // ->select('car_wash_bookings.*', 'payment_cards.card_no')
+*', 'payment_cards.card_no')
     where('car_wash_bookings.user_id', $user_id)
     ->whereIn('car_wash_bookings.status', ['Completed','Cancelled','Expired'])->orderBy('updated_at','desc')->get();
     // $mylist = array();
@@ -342,18 +252,7 @@ class CarWashBookingController extends Controller
 
     public function washListweek(Request $request)
     {
-        $washes = CarWashBooking::where('user_id', $request->user()->id)->select('date')->groupBy('date')->get();
-        $response = new StdClass;
-        $status = 200;
-        $message = "Car wash dates not available. Refresh and retry";
-        $weeklist = array();
-        if ($washes){
-            foreach ($washes as $key => $value) {
-                $date = $value->date;
-                $time = strtotime($date);
-                $week = date('W', $time);
-                if (in_array($week, $weeklist) < 1){
-                    array_push($weeklist, $week);
+        $washes = CarWashBooking::where('user_id', $request->user()->id)->select('date')->groupByweek);
                 }
             }
             $response->wash_week = $weeklist;
@@ -404,16 +303,7 @@ class CarWashBookingController extends Controller
                 break;
                 case 'downvote':
                     case 'dislike':
-                        $profile->downvote_count += 1;
-                    break;
-            }
-            $profile->save();
-            $status = 200;
-            $message = "Voted";
-            $mybooking->is_rated = true;
-            $mybooking->save();
-        }
-        $response->status = $status;
+                        $profile->downvote_count += 1
         $response->message = $message;
         return response()->json($response);  
     }
