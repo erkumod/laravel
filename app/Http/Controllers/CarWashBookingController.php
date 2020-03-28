@@ -64,23 +64,35 @@ class CarWashBookingController extends Controller
         $profile = Profile::where('user_id',$user_id)->first();
         try {
             //code...
-            $charge = Stripe::charges()->create([
-                'customer' => $profile->customer_key,
+            // $charge = Stripe::charges()->create([
+            //     'customer' => $profile->customer_key,
+            //     'currency' => 'INR',
+            //     'amount'   => $request->fare,
+            //     'source' => $card->stripe_card_id,
+            //     'capture' => true,
+            //     'description' => 'Swipe Booking',
+            // ]);
+            $charge = Stripe::paymentIntents()->create([
+                'amount' => $request->fare,
                 'currency' => 'INR',
-                'amount'   => $request->fare,
-                'source' => $card->stripe_card_id,
-                'capture' => true,
-                'description' => 'Swipe Booking',
+                'payment_method_types' => [
+                    'card',
+                ],
+                'customer' => $profile->customer_key,
+                'capture_method' => 'manual'
+            ]);
+            $charge = Stripe::paymentIntents()->confirm( $charge['id'], [
+                'payment_method' => $card->stripe_card_id,
             ]);
         } catch (\Throwable $th) {
             $response->status = 400;
             $response->message = "something went wrong! please try again later";
             return response()->json($response);   
         }
-        if($charge['amount_refunded'] == 0 && empty($charge['failure_code']) && $charge['paid'] == 1 && $charge['captured'] == 1)
+        if($charge['charges']['data'][0]['amount_refunded'] == 0 && empty($charge['charges']['data'][0]['failure_code']) && $charge['charges']['data'][0]['paid'] == 1)
         {
             $mybooking = new CarWashBooking;
-            $mybooking->payment_status = "paid";
+            $mybooking->payment_status = "hold";
             $mybooking->charge_id = $charge['id'];
             $mybooking->location      = $request->location;
             $mybooking->vehicle_id      = $request->vehicle_id;
@@ -169,7 +181,7 @@ class CarWashBookingController extends Controller
             $promoCode = $mybooking->booking_promp;
             $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','used')->first();
             $push = "Sorry, the booking has been cancelled by vehicle owner. Please select another booking.";
-            $result = NotificationController::sendPushNotification($push,$mybooking->accepted_by,'Booking','washer');
+            $result = NotificationController::sendPushNotification($push,'cancle_booking',$mybooking->accepted_by,'Booking','washer');
             if($stamp){
                 $stamp->isValid = "valid";
                 $stamp->save();

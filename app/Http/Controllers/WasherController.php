@@ -16,6 +16,7 @@ use App\User;
 use App\MyCar;
 use StdClass;
 use Config;
+use Stripe;
 use Image;
 use File;
 
@@ -152,7 +153,7 @@ class WasherController extends Controller
             $status = 200;
             $title = "Yes! We have found a shine specialist for you!";
             $message = 'You can check your booking status in “Bookings” > “Scheduled” tab.';
-            $result = NotificationController::sendPushNotification($message,$washes->user_id,"Booking",'customer');
+            $result = NotificationController::sendPushNotification($message,$washes->user_id,'wash_accept',"Booking",'customer');
             $message = "Accepted successfully";
 
         }
@@ -191,7 +192,7 @@ class WasherController extends Controller
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);
-            $result = NotificationController::sendPushNotification($msg,$sender_id,"Booking",'customer');
+            $result = NotificationController::sendPushNotification($msg,$sender_id,'start_wash',"Booking",'customer');
 
         }
         $response->status = $status;
@@ -230,6 +231,10 @@ class WasherController extends Controller
                 $washes->booking_complete_image2 =$filename;
             }
             $washes->update(); 
+            try {
+                $paymentIntent = Stripe::paymentIntents()->capture($washes->charge_id);
+            } catch (\Throwable $th) {
+            }
             $response->accepted_wash = $washes;
             $profile = Profile::where('user_id',$washes->user_id)->first();
             // $profile = Profile::where('user_id',$user_id)->first();
@@ -255,11 +260,11 @@ class WasherController extends Controller
                 $profile->unrewarded_booking = 0;
                 $profile->save();
                 $message = 'Congratulations!You have successfully redeemed $7 off!T&C applies.';
-                $result = NotificationController::sendPushNotification($message,$washes->user_id,"Reward",'customer');
+                $result = NotificationController::sendPushNotification($message,'reedeem_stamp',$washes->user_id,"Reward",'customer');
             }
             $title = "Booking";
             $push = "Yay, your vehicle has been cleaned!You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab."; 
-            $result = NotificationController::sendPushNotification($push,$washes->user_id,$title,'customer');
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,'complete_booking',$title,'customer');
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
             if($profile){
@@ -383,7 +388,7 @@ class WasherController extends Controller
                 }
             $washes->update();
             $push = "Sorry! Your booking request has been cancelled by the shine specialist. We are still looking for another shine specialist for you! Hang on tight!";
-            $result = NotificationController::sendPushNotification($push,$washes->user_id,"Booking",'customer');
+            $result = NotificationController::sendPushNotification($push,$washes->user_id,'cancle_wash',"Booking",'customer');
             $response->accepted_wash = $washes;
             $status = 200;
             $message = "Canceld successfully";

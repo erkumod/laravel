@@ -217,7 +217,7 @@ class NotificationController extends Controller
         dd($result);
     }
 
-    public static function sendPushNotification($message,$user_id,$title = "Swipe",$user_type = null)
+    public static function sendPushNotification($message,$user_id,$page,$title = "Swipe",$user_type = null)
     {
         $push = PushNotification::where('user_id',$user_id)->first();
         $data = array(
@@ -225,7 +225,8 @@ class NotificationController extends Controller
             'notification_desc' => $message,
             'user_id'   => $user_id,
             'user_type'          => $user_type,
-            'type'       => 'user_action'
+            'type'       => 'user_action',
+            'page'       => $page,
         );
         Notifications::create($data);
         if($push){
@@ -247,7 +248,7 @@ class NotificationController extends Controller
                     if (!$fp)
                         exit("Failed to connect: $err $errstr" . PHP_EOL);
                     $counter = 1;
-                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=>$counter);
+                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=>$counter,'page'=>$page);
                     $payload = json_encode($body);
         
                     $msg = chr(0) . pack('n', 32) . pack('H*', $notification_token) . pack('n', strlen($payload)) . $payload;			
@@ -267,7 +268,10 @@ class NotificationController extends Controller
                         'notification' => array (
                                 "body" => $message,
                                 "title" => $title,
-                            )
+                        ),
+                        "data" => array(
+                            "page" => $page,
+                        ),
                     );
                     $GOOGLE_API_KEY = env('G_API_KEY');
                     $FCM_URL = 'https://fcm.googleapis.com/fcm/send';
