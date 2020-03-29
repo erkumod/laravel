@@ -232,7 +232,7 @@ class WasherController extends Controller
             }
             try {
                 $paymentIntent = Stripe::paymentIntents()->capture($washes->charge_id);
-                if($charge['charges']['data'][0]['amount_refunded'] == 0){
+                if($paymentIntent['charges']['data'][0]['status'] == "succeeded"){
                     $washes->payment_status = "paid";
                 }
             } catch (\Throwable $th) {
