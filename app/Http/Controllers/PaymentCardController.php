@@ -23,8 +23,8 @@ class PaymentCardController extends Controller
             'name'        => 'required',
                
         ]);       
+		$profile = Profile::where('user_id',$user_id)->first();
 		try {
-			$profile = Profile::where('user_id',$user_id)->first();
 			$stripe_card = Stripe::sources()->create([
 				'type' => 'card',
 				'token' => $request->stripe_card_id,
@@ -35,11 +35,10 @@ class PaymentCardController extends Controller
 			]); 
 			$source = Stripe::sources()->attach($profile->customer_key, $stripe_card['id']);
 			// "",
-		} catch (\Throwable $th) {
-			\Log::info($th);
-			$response->status = 400;
-			$response->message = "Please enter valid card detail and try again";
-			return response()->json($response);     
+		}catch (\Throwable $th) {
+			 $response->status = $th->getCode();
+			 $response->message = $th->getMessage();
+			 return response()->json($response);     
 		}
         $mycard = new PaymentCard;
 		$mycard->card_no      = $request->card_no;

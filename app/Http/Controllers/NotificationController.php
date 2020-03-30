@@ -299,6 +299,90 @@ class NotificationController extends Controller
         return false;
     }
 
+    public static function sendChatPushNotification($message,$user_id,$senderData,$page,$title = "Swipe",$user_type = null)
+    {
+        $push = PushNotification::where('user_id',$user_id)->first();
+        // $data = array(
+            // 'notification_title' => $title,
+            // 'notification_desc' => $message,
+            // 'user_id'   => $user_id,
+            // 'user_type'          => $user_type,
+            // 'type'       => 'user_action',
+            // 'page'       => $page,
+        // );
+        // Notifications::create($data);
+        // payload
+        if($push){
+            $notification_token = $push->notification_token;
+            if($notification_token){
+                if($push->os == "ios"){
+                    $apns_user_id = $user_id;
+                    $deviceToken  = $notification_token;            
+                    $passphrase = '123456';				
+                    $ctx = stream_context_create();
+                    $ckName = "/var/www/swipe-web/ck.pem";
+                    
+                    stream_context_set_option($ctx, 'ssl', 'local_cert', $ckName);
+                    stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
+                    $fp = stream_socket_client(
+                            // 'ssl://gateway.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
+                            'ssl://gateway.sandbox.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
+                    
+                    if (!$fp)
+                        exit("Failed to connect: $err $errstr" . PHP_EOL);
+                    $counter = 1;
+                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=>$counter,'page'=>$page,'payload' => $senderData);
+                    $payload = json_encode($body);
+        
+                    $msg = chr(0) . pack('n', 32) . pack('H*', $notification_token) . pack('n', strlen($payload)) . $payload;			
+                    $result = fwrite($fp, $msg, strlen($msg));
+                    
+                    if (!$result)
+                        return 'Message not delivered - Customer' . PHP_EOL;
+                    else
+                        return 'Message successfully delivered - Customer' . PHP_EOL;
+                    fclose($fp);
+                }else{
+
+                    $registatoin_ids = array();
+                    array_push($registatoin_ids,$notification_token);
+                    $fields = array(
+                        'registration_ids' => $registatoin_ids,
+                        'notification' => array (
+                                "body" => $message,
+                                "title" => $title,
+                        ),
+                        "data" => array(
+                            "page" => $page,
+                            "payload" => $senderData
+                        ),
+                    );
+                    $GOOGLE_API_KEY = env('G_API_KEY');
+                    $FCM_URL = 'https://fcm.googleapis.com/fcm/send';
+                    $headers = array(
+                        'Authorization: key=' . $GOOGLE_API_KEY,
+                        'Content-Type: application/json'
+                    );
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $FCM_URL);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);   
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                    $result = curl_exec($ch);               
+                    // if ($result === FALSE) {
+                        // die('Curl failed: ' . curl_error($ch));
+                    // }
+                    curl_close($ch);
+                    return $result;
+                }
+            }
+        }
+        return false;
+    }
+
     public function getPushList(Request $request)
     {
         $response = new StdClass;
@@ -307,7 +391,7 @@ class NotificationController extends Controller
         $response->notifications = null;
         $user_id=$request->user()->id;
         if($user_id){
-            $notifications = Notifications::where('user_id',$user_id)->where('user_type',$request->user_type)->get();
+            $notifications = Notifications::where('user_id',$user_id)->where('user_type',$request->user_type)->orderBy('id', 'DESC')->get();
             $response->notifications = $notifications;
             $response->status = 200;
             $response->message = 'success';

@@ -85,8 +85,8 @@ class CarWashBookingController extends Controller
                 'payment_method' => $card->stripe_card_id,
             ]);
         } catch (\Throwable $th) {
-            $response->status = 400;
-            $response->message = "something went wrong! please try again later";
+            $response->status = $th->getCode();
+            $response->message = $th->getMessage();
             return response()->json($response);   
         }
         if($charge['charges']['data'][0]['amount_refunded'] == 0 && empty($charge['charges']['data'][0]['failure_code']) && $charge['charges']['data'][0]['paid'] == 1)
@@ -178,10 +178,17 @@ class CarWashBookingController extends Controller
                 return response()->json($response);
             }
             $mybooking->status      = 'Cancelled';
+            try {
+                $paymentIntent = Stripe::paymentIntents()->cancel($mybooking->charge_id);
+            } catch (\Throwable $th) {
+                $response->status = 400;
+                $response->message = "Something went wrong! Please try again";
+                return response()->json($response);  
+            }
             $promoCode = $mybooking->booking_promp;
             $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','used')->first();
             $push = "Sorry, the booking has been cancelled by vehicle owner. Please select another booking.";
-            $result = NotificationController::sendPushNotification($push,'cancle_booking',$mybooking->accepted_by,'Booking','washer');
+            $result = NotificationController::sendPushNotification($push,$mybooking->accepted_by,'cancle_booking',$mybooking->accepted_by,'Booking','washer');
             if($stamp){
                 $stamp->isValid = "valid";
                 $stamp->save();

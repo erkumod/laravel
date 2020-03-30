@@ -65,7 +65,12 @@ class BookingChatController extends Controller
             $title = "Booking";
             $msg = "You have new msg for booking";
             $user_type = $is_washer ? 'washer' : 'customer';
-            $result = NotificationController::sendPushNotification($msg,$receiver_id,'chat',$title,$user_type);
+            $senderData = array(
+                'user_name' => $request->user()->name,
+                'user_id' => (int) $sender_id,
+                'booking_id' => (int) $booking_id,
+            );
+            $result = NotificationController::sendChatPushNotification($msg,$receiver_id,$senderData, $user_type.'_chat',$title,$user_type);
         }
         return response()->json($response);
     }
