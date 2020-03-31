@@ -47,7 +47,8 @@ class PushNotificationController extends Controller
                 ['user_id' => $user_id],
                 [
                     'notification_token' => $notification_token,
-                    'os' => $os
+                    'os' => $os,
+                    'counter' => 0,
                 ]
             );
             $message = 'Token added';

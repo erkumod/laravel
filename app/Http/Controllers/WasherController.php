@@ -192,7 +192,7 @@ class WasherController extends Controller
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);
-            $result = NotificationController::sendPushNotification($msg,$sender_id,'start_wash',"Booking",'customer');
+            $result = NotificationController::sendPushNotification($msg,$receiver_id,'start_wash',"Booking",'customer');
 
         }
         $response->status = $status;

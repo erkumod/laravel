@@ -247,8 +247,12 @@ class NotificationController extends Controller
                     
                     if (!$fp)
                         exit("Failed to connect: $err $errstr" . PHP_EOL);
-                    $counter = 1;
-                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=>$counter,'page'=>$page);
+
+                    $push->counter = $push->counter + 1;
+                    $push->save();
+
+                    $body = array('page'=>$page);
+                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge' => $push->counter);
                     $payload = json_encode($body);
         
                     $msg = chr(0) . pack('n', 32) . pack('H*', $notification_token) . pack('n', strlen($payload)) . $payload;			
@@ -330,8 +334,11 @@ class NotificationController extends Controller
                     
                     if (!$fp)
                         exit("Failed to connect: $err $errstr" . PHP_EOL);
-                    $counter = 1;
-                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=>$counter,'page'=>$page,'payload' => $senderData);
+                    $push->counter = $push->counter + 1;
+                    $push->save();
+                    $body = array('page'=>$page,'payload' => $senderData);
+                    $body['aps'] = array('sound'=>"default",'alert' => $message,'badge'=> $push->counter);
+
                     $payload = json_encode($body);
         
                     $msg = chr(0) . pack('n', 32) . pack('H*', $notification_token) . pack('n', strlen($payload)) . $payload;			
