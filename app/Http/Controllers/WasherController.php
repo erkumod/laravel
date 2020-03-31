@@ -187,7 +187,7 @@ class WasherController extends Controller
                 'booking_id' => (int) $booking_id,
                 'receiver_id' => (int) $receiver_id,
                 'flag' => 'unread',
-                'washer_flag' => 'unread',
+                'washer_flag' => 'read',
                 'is_washer' => true,
                 'sender_id' => $sender_id,
             );
