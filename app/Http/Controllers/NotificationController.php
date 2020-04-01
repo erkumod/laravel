@@ -175,7 +175,7 @@ class NotificationController extends Controller
     {
         // $registatoin_ids = array();
         // $gcm_regid = $request->user()->id;
-        $notification_token = "e376feaaf1d3bebc94edbc0c467627cc2091e372882530e186d813c8d868bae9";
+        $notification_token = "a697856cd7ed123ab4875bd2322d732396e8cdc0794082a2e8e1051010a110a9";
         // $apns_user_id = $user_id;
         // $deviceToken  = $notification_token;            
         $passphrase = '123456';				
@@ -202,6 +202,42 @@ class NotificationController extends Controller
         else
             return 'Message successfully delivered - Customer' . PHP_EOL;
         fclose($fp);
+    }
+
+    public function TestAndroidNotification(Request $request)
+    {
+        $notification_token = "c-PGYFDlcMY:APA91bE11gIqT8TUkAcpI7WJzYM5qUJSP9OM7rZhPUMstvVRa49X0CcQfdROIVV78vrXj9QvVlNWj4wVbAT2MyV2jfhFwZAa5BNtUOrMiqibucS_4KBpiwgoS0NH1XFDNo3m7202RXdA";
+        $registatoin_ids = array();
+        array_push($registatoin_ids,$notification_token);
+        $fields = array(
+            'registration_ids' => $registatoin_ids,
+            'notification' => array (
+                    "body" => "Test",
+                    "title" => "Title",
+            ),
+            "data" => array(
+                "page" => "test",
+            ),
+        );
+        $GOOGLE_API_KEY = env('G_API_KEY');
+        $FCM_URL = 'https://fcm.googleapis.com/fcm/send';
+        $headers = array(
+            'Authorization: key=' . $GOOGLE_API_KEY,
+            'Content-Type: application/json'
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $FCM_URL);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);   
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);               
+        // if ($result === FALSE) {
+            // die('Curl failed: ' . curl_error($ch));
+        // }
+        curl_close($ch);
     }
 
     public function TestNotification(Request $request)
