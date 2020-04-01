@@ -39,7 +39,7 @@ class SendWasherNotification extends Command
      */
     public function handle()
     {
-        $bookings = CarWashBooking::where('wash_start_time',  '<', \Carbon\Carbon::now()->subHours(2))
+        $bookings = CarWashBooking::where('wash_start_time',  '<', \Carbon\Carbon::now())
         ->where('status','Started')->get();
         $data = [];
         foreach ($bookings as $key => $booking) {
