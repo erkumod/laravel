@@ -188,7 +188,7 @@ class CarWashBookingController extends Controller
             $promoCode = $mybooking->booking_promp;
             $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','used')->first();
             $push = "Sorry, the booking has been cancelled by vehicle owner. Please select another booking.";
-            $result = NotificationController::sendPushNotification($push,$mybooking->accepted_by,'cancle_booking',$mybooking->accepted_by,'Booking','washer');
+            $result = NotificationController::sendPushNotification($push,$mybooking->accepted_by,'cancle_booking','Booking','washer');
             if($stamp){
                 $stamp->isValid = "valid";
                 $stamp->save();
