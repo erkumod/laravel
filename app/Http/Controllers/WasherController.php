@@ -173,6 +173,7 @@ class WasherController extends Controller
         $washes = CarWashBooking::where('id', $request->wash_id)->where('status', 'Accepted')->where('accepted_by', $request->user()->id)->first();
         if ($washes){
             $washes->status = 'Started';
+            $wash->wash_start_time = Carbon::now();
             $washes->update(); 
             $response->accepted_wash = $washes;
             $status = 200;

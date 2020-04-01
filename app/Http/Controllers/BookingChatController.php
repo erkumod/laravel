@@ -63,7 +63,7 @@ class BookingChatController extends Controller
             $response->status = 200;
             $response->message = 'success';
             $title = "Booking";
-            $msg = "You have message from".$request->user()->name;
+            $msg = "You have message from ".$request->user()->name;
             $user_type = $is_washer ? 'washer' : 'customer';
             $senderData = array(
                 'user_name' => $request->user()->name,
