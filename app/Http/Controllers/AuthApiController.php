@@ -119,6 +119,10 @@ class AuthApiController extends Controller
             $user->email_verification = 'Verified';
             $user->update();
         }
+       $push =  PushNotification::where('user_id',$user->id)->first();
+       if($push != null){
+           $user->notification_token = $push->notification_token;
+       }
         return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user]]);
     }
 
