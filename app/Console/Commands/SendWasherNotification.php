@@ -89,6 +89,7 @@ class SendWasherNotification extends Command
                     if (!$result)
                         return 'Message not delivered - Customer' . PHP_EOL;
                     else
+                        \Log::info("message delevered ios");
                         return 'Message successfully delivered - Customer' . PHP_EOL;
                     fclose($fp);
                 }
@@ -119,7 +120,8 @@ class SendWasherNotification extends Command
                 curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);   
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-                $result = curl_exec($ch);               
+                $result = curl_exec($ch);         
+                \Log::info("message delevered android");
                 // if ($result === FALSE) {
                     // die('Curl failed: ' . curl_error($ch));
                 // }
