@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\User;
 use App\Profile;
+use App\PushNotification;
 use App\OTP;
 use App\Mail\PasswordResetOtp;
 use JWTFactory;
