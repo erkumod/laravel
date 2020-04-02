@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('completewash:notification')->everyMinute();
+        $schedule->command('completewash:notification')->everyFifteenMinutes();
         // $schedule->command('inspire')
         //          ->hourly();
     }
