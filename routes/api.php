@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('/TestNotification', 'NotificationController@TestNotification')->name('TestNotification');
 Route::get('/TestIosNotification', 'NotificationController@TestIosNotification')->name('TestIosNotification');
+Route::get('/TestAndroidNotification', 'NotificationController@TestAndroidNotification')->name('TestAndroidNotification');
 Route::post('register', 'AuthApiController@register');
 Route::post('login', 'AuthApiController@login');
 Route::post('logintest', 'AuthApiController@googleloginfun');
@@ -158,4 +159,9 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('getPushList',"NotificationController@getPushList");
 	Route::post('deletePushList',"NotificationController@deletePushList");
 	Route::post('washerAccountDetail',"WasherBankDetailController@store");
+	
+	Route::get('getFaq',"FaqVoteController@index");
+	Route::post('voteFaq',"FaqVoteController@store");
+
+
 });
