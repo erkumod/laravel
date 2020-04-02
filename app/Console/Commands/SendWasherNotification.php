@@ -40,7 +40,7 @@ class SendWasherNotification extends Command
     public function handle()
     {
         \Log::info('into the cron');
-        $bookings = CarWashBooking::where('wash_start_time',  '<', \Carbon\Carbon::now())
+        $bookings = CarWashBooking::where('wash_start_time',  '<', \Carbon\Carbon::now()->subHours(2))
         ->where('status','Started')->get();
         \Log::info($bookings);
         $data = [];
