@@ -64,6 +64,7 @@ class SendWasherNotification extends Command
             if (!is_null($iosTokens)) {
                 foreach ($iosTokens as $key => $token) {
                     $deviceToken  = $token->notification_token;            
+                    // $cb = CarWashBooking::where('status','Started')->where('accepted_by',$token->user_id)->first();            
                     $passphrase = '123456';				
                     $ctx = stream_context_create();
                     $ckName = "/var/www/swipe-web/ck.pem";
@@ -78,8 +79,11 @@ class SendWasherNotification extends Command
                     $push = PushNotification::where('id',$token->id)->first();
                     $push->counter = $push->counter + 1;
                     $push->save();
+                    // $cbi = [];
+                    //  $cbi['booking_id'] =    $booking->id;
+                    // $body = array('page'=>'check_washer','payload' => $cbi);
 
-                    $body = array('page'=>'start_wash');
+                    $body = array('page'=>'check_washer');
                     $body['aps'] = array('sound'=>"default",'alert' => "Please Complete your current job",'badge' => $push->counter);
                     $payload = json_encode($body);
         
@@ -103,7 +107,7 @@ class SendWasherNotification extends Command
                             "title" => "Booking",
                     ),
                     "data" => array(
-                        "page" => "start_wash",
+                        "page" => "check_washer",
                     ),
                 );
                 $GOOGLE_API_KEY = env('G_API_KEY');
