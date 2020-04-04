@@ -51,6 +51,21 @@ class WasherController extends Controller
         return response()->json($response);
     }
 
+    public function startedWash(Request $request)
+    {
+        $response = new StdClass;
+        $wash = CarWashBooking::where('status', 'Started')
+        ->where('accepted_by', $request->user()->id)
+        ->first();
+        $status = 200;
+        $message = "Success";
+
+        $response->wash = $wash ?? 0;
+        $response->status = $status;
+        $response->message = $message;
+
+        return response()->json($response);
+    }
     public function availableWashes(Request $request)
     {
         $response = new StdClass;
