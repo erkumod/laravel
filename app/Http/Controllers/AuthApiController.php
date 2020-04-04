@@ -213,6 +213,11 @@ class AuthApiController extends Controller
      */
     public function logout(Request $request) {
         $this->validate($request, ['token' => 'required']);
+        $os = $request->os;
+        $user_id = $request->user_id ??$request->user()->id;
+        $push =  PushNotification::where('os',$os)
+        ->where('user_id',$user_id)
+        ->delete(); 
         try {
             JWTAuth::invalidate($request->input('token'));
             return response()->json(['success' => true, 'message'=> "You have successfully logged out."]);
