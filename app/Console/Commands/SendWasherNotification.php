@@ -39,10 +39,10 @@ class SendWasherNotification extends Command
      */
     public function handle()
     {
-        \Log::info('into the cron');
+        // \Log::info('into the cron');
         $bookings = CarWashBooking::where('wash_start_time',  '<', \Carbon\Carbon::now()->subHours(2)->toDateTimeString())
         ->where('status','Started')->get();
-        \Log::info($bookings);
+        // \Log::info($bookings);
         $data = [];
         foreach ($bookings as $key => $booking) {
             $data[] = array(
@@ -89,7 +89,7 @@ class SendWasherNotification extends Command
                     if (!$result)
                         return 'Message not delivered - Customer' . PHP_EOL;
                     else
-                        \Log::info("message delevered ios");
+                        // \Log::info("message delevered ios");
                         return 'Message successfully delivered - Customer' . PHP_EOL;
                     fclose($fp);
                 }
@@ -121,7 +121,7 @@ class SendWasherNotification extends Command
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
                 $result = curl_exec($ch);         
-                \Log::info("message delevered android");
+                // \Log::info("message delevered android");
                 // if ($result === FALSE) {
                     // die('Curl failed: ' . curl_error($ch));
                 // }
