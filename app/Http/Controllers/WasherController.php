@@ -35,6 +35,15 @@ class WasherController extends Controller
             $washer = 1;
             $message = "User is registered and approved";
         }
+        $washes = CarWashBooking::where('status', 'Started')
+        ->where('wash_start_time',  '<',\Carbon\Carbon::now()->subHours(2)->toDateTimeString())
+        ->where('accepted_by', $request->user()->id)
+        ->first();
+        if ($washes){
+           $response->is_startedWash = $washes->id;
+        }else{
+            $response->is_startedWash = 0;
+        }
         $response->status = $status;
         $response->washer = $washer;
         $response->message = $message;
