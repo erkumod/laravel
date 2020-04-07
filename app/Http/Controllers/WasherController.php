@@ -60,7 +60,7 @@ class WasherController extends Controller
         $status = 200;
         $message = "Success";
 
-        $response->wash = $wash ?? 0;
+        $response->wash = is_null($wash) ? 0 : 1;
         $response->status = $status;
         $response->message = $message;
 
