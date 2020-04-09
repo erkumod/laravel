@@ -158,6 +158,7 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('getMessages',"BookingChatController@getMessages");
 	Route::post('getPushList',"NotificationController@getPushList");
 	Route::post('deletePushList',"NotificationController@deletePushList");
+	Route::post('deletePush',"NotificationController@deletePush");
 	Route::post('washerAccountDetail',"WasherBankDetailController@store");
 	
 	Route::get('getFaq',"FaqVoteController@index");

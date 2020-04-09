@@ -16,13 +16,16 @@ class PaymentCardController extends Controller
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong!!!";
-        $validatedData = $request->validate([
-            'card_no'        => 'required',
+		$validator = Validator::make($request->all(), [
+            'card_no'        => 'required|unique:payment_cards',
             'expiry_month'        => 'required',
             'expiry_year'        => 'required',
             'name'        => 'required',
                
-        ]);       
+		]);
+        if($validator->fails()) {
+            return response()->json(['success'=> false, 'error'=> $validator->messages()],200);
+        }  
 		$profile = Profile::where('user_id',$user_id)->first();
 		try {
 			$stripe_card = Stripe::sources()->create([

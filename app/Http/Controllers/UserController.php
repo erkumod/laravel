@@ -721,14 +721,16 @@ class UserController extends Controller
         $response = new StdClass;
         $status = 400;
         $message = "Something Went Wrong!!!";
-        $validatedData = $request->validate([
+        $rules = [
             'brand_id'        => 'required',
             'model_id'        => 'required',
-            'vehicle_no'      => 'required',
-            ]);
+            'vehicle_no'      => 'required|unique:my_cars',
+        ];
 
-        
-
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()) {
+            return response()->json(['success'=> false, 'error'=> $validator->messages()]);
+        }
 
         $dataArr = array(
             "car_brand"     => $request->brand_id,

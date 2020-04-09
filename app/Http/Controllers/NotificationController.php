@@ -455,4 +455,17 @@ class NotificationController extends Controller
         }
         return response()->json($response);
     }
+    public function deletePush(Request $request)
+    {
+        $response = new StdClass;
+        $response->status = 400;
+        $response->message = "No current notification";
+        $user_id=$request->user()->id;
+        if($user_id){
+            $notifications = Notifications::where('user_id',$user_id)->where('id',$request->notification_id)->delete();
+            $response->status = 200;
+            $response->message = 'success';
+        }
+        return response()->json($response);
+    }
 }
