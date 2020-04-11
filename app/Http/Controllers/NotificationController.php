@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BookingChat;
 use App\Notifications;
 use App\PushNotification;
 use Illuminate\Http\Request;
@@ -479,6 +480,27 @@ class NotificationController extends Controller
         $user_id=$request->user()->id;
         if($user_id){
             $notifications = Notifications::where('user_id',$user_id)->where('id',$request->notification_id)->update(['flag' => "read"]);
+            $response->status = 200;
+            $response->message = 'success';
+        }
+        return response()->json($response);
+    }
+
+    public function unread_counter(Request $request)
+    {
+        $response = new StdClass;
+        $response->status = 400;
+        $response->message = "No current notification";
+        $user_id=$request->user()->id;
+        if($user_id){
+            $notification_unseen = Notifications::where('user_id',$user_id)->where('user_type',$request->user_type)->where('flag','unread')->count();
+            if($request->user_type == "washer"){
+                $chat_unseen = BookingChat::where('receiver_id',$user_id)->where('is_washer',1)->where('washer_flag','unread')->count();
+            }else{
+                $chat_unseen = BookingChat::where('receiver_id',$user_id)->where('is_washer',0)->where('flag','unread')->count();
+            }
+            $response->notification_unseen = $notification_unseen;
+            $response->chat_unseen = $chat_unseen;
             $response->status = 200;
             $response->message = 'success';
         }

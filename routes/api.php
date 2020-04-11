@@ -166,5 +166,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 
 	Route::get('startedWash', 'WasherController@startedWash');
 	Route::post('readPush', 'NotificationController@readPush');
+	Route::post('unread_counter', 'NotificationController@unread_counter');
 
 });
