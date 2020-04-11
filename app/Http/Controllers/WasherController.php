@@ -178,8 +178,8 @@ class WasherController extends Controller
             $title = "Yes! We have found a shine specialist for you!";
             $message = "Yes! We have found a shine specialist for you!\n You can check your booking status in “Bookings” > “Scheduled” tab.";
             $result = NotificationController::sendPushNotification($message,$washes->user_id,'wash_accept',"Bookings",'customer');
-            \Log::info($result);
-            \Log::info("=============");
+            // \Log::info($result);
+            // \Log::info("=============");
             $message = "Accepted successfully";
 
         }
@@ -219,24 +219,7 @@ class WasherController extends Controller
                 'sender_id' => $sender_id,
             );
             $messageRes = BookingChat::create($data);
-            $user = User::where('id',$washes->user_id)->first();
-            $senderData = array(
-                'user_name' => $user->name,
-                'user_id' => (int) $sender_id,
-                'booking_id' => (int) $booking_id,
-            );
-            $title = "Booking";
-            $result = NotificationController::sendChatPushNotification($msg,$receiver_id,$senderData, 'customer'.'_chat',$title,'customer');
-            \Log::info('_________________________');
-            \Log::info('_________________________');
-            \Log::info($result);
-            \Log::info('_________________________');
-            \Log::info('_________________________');
-            \Log::info('=========================');
             $result = NotificationController::sendPushNotification($msg,$receiver_id,'start_wash',"Booking",'customer');
-            \Log::info('_________________________');
-            \Log::info($result);
-            \Log::info('_________________________');
 
         }
         $response->status = $status;
@@ -309,7 +292,7 @@ class WasherController extends Controller
                 $profile->unrewarded_booking = 0;
                 $profile->save();
                 $message = "Congratulations!\n You have successfully redeemed $7\n off T&C applies.";
-                $result = NotificationController::sendPushNotification($message,'reedeem_stamp',$washes->user_id,"Reward",'customer');
+                $result = NotificationController::sendPushNotification($message,$washes->user_id,'reedeem_stamp',"Reward",'customer');
             }
             $title = "Bookings";
             $push = "Yay, your vehicle has been cleaned!\nYou can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab. "; 
