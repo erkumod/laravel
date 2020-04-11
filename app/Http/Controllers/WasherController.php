@@ -265,6 +265,7 @@ class WasherController extends Controller
                 $washes->payment_status = "unpaid";
             }
             $washes->update(); 
+            MyCar::where('id', $washes->vehicle_id)->update(['is_booked' => false]);            
             $response->accepted_wash = $washes;
             $profile = Profile::where('user_id',$washes->user_id)->first();
             // $profile = Profile::where('user_id',$user_id)->first();

@@ -145,6 +145,8 @@ class CarWashBookingController extends Controller
             }
             $mybooking->save();
             if ($mybooking){
+                // is_booked
+                MyCar::where('id', $request->vehicle_id)->update(['is_booked' => true]);
                 $response->mybooking = $mybooking;
                 $status = 200;
                 $message = "Car wash booking saved Successfully";
@@ -195,6 +197,7 @@ class CarWashBookingController extends Controller
             }
             // dd($stamp);
             $mybooking->update();
+            MyCar::where('id', $mybooking->vehicle_id)->update(['is_booked' => false]);
             $status = 200;
             $message = "Car wash booking cancelled successfully";
             // if($mybooking->isPromo == true){

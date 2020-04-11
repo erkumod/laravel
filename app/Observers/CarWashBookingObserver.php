@@ -18,9 +18,11 @@ class CarWashBookingObserver
         $end_time = Carbon::parse($carWashBooking->end_time);
         if($end_time->lt(Carbon::now()) && $carWashBooking->status == "Pending")
         {
+            MyCar::where('id', $carWashBooking->vehicle_id)->update(['is_booked' => false]);
             $carWashBooking->status = 'Expired';
             $carWashBooking->save();
         }elseif ($carWashBooking->status == "Expired" && $carWashBooking->wash_completed_date != Null) {
+            MyCar::where('id', $carWashBooking->vehicle_id)->update(['is_booked' => false]);
             $carWashBooking->status = 'Completed';
             $carWashBooking->save();
         }
