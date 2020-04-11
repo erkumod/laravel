@@ -178,6 +178,7 @@ class WasherController extends Controller
             $title = "Yes! We have found a shine specialist for you!";
             $message = "Yes! We have found a shine specialist for you!\n You can check your booking status in “Bookings” > “Scheduled” tab.";
             $result = NotificationController::sendPushNotification($message,$washes->user_id,'wash_accept',"Bookings",'customer');
+            \Log::info($result);
             $message = "Accepted successfully";
 
         }
@@ -218,6 +219,7 @@ class WasherController extends Controller
             );
             $messageRes = BookingChat::create($data);
             $result = NotificationController::sendPushNotification($msg,$receiver_id,'start_wash',"Booking",'customer');
+            \Log::info($result);
 
         }
         $response->status = $status;
@@ -293,7 +295,7 @@ class WasherController extends Controller
                 $result = NotificationController::sendPushNotification($message,'reedeem_stamp',$washes->user_id,"Reward",'customer');
             }
             $title = "Bookings";
-            $push = "Yay, your vehicle has been cleaned!\n You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab. "; 
+            $push = "Yay, your vehicle has been cleaned!\nYou can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab. "; 
             $result = NotificationController::sendPushNotification($push,$washes->user_id,'complete_booking',$title,'customer');
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
