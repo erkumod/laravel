@@ -179,6 +179,7 @@ class WasherController extends Controller
             $message = "Yes! We have found a shine specialist for you!\n You can check your booking status in “Bookings” > “Scheduled” tab.";
             $result = NotificationController::sendPushNotification($message,$washes->user_id,'wash_accept',"Bookings",'customer');
             \Log::info($result);
+            \Log::info("=============");
             $message = "Accepted successfully";
 
         }
