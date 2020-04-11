@@ -22,7 +22,9 @@ class PaymentCardController extends Controller
             'expiry_year'        => 'required',
             'name'        => 'required',
                
-		]);
+		], [
+            'unique' => 'Card already exist',
+        ]);
         if($validator->fails()) {
             return response()->json(['success'=> false, 'error'=> $validator->messages()],200);
         }  

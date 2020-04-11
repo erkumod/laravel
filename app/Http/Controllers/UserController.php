@@ -726,8 +726,10 @@ class UserController extends Controller
             'model_id'        => 'required',
             'vehicle_no'      => 'required|unique:my_cars',
         ];
-
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'unique' => 'Vehicle plate number already exist',
+        ];
+        $validator = Validator::make($request->all(), $rules,$messages);
         if($validator->fails()) {
             return response()->json(['success'=> false, 'error'=> $validator->messages()]);
         }

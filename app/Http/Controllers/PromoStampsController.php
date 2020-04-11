@@ -26,9 +26,7 @@ class PromoStampsController extends Controller
             $stamp = PromoStamps::create($data);
             $profile->unrewarded_booking -= 4;
             $profile->save();
-            $message = 'Congratulations!
-            You have successfully redeemed $3 off!
-            T&C applies.';
+            $message = 'Congratulations! You have successfully redeemed $3 off! T&C applies.';
             $result = NotificationController::sendPushNotification($message,$user_id,'reedeem_stamp',"Rewards",'customer');
         }elseif($profile->unrewarded_booking == 8){
             $data = array('type'=>"Mini7");
@@ -39,9 +37,7 @@ class PromoStampsController extends Controller
             $stamp = PromoStamps::create($data);
             $profile->unrewarded_booking = 0;
             $profile->save();
-            $message = 'Congratulations!
-            You have successfully redeemed $7 off
-            T&C applies.';
+            $message = 'Congratulations! You have successfully redeemed $7 off T&C applies.';
             $result = NotificationController::sendPushNotification($message,$registatoin_ids,'reedeem_stamp',"Rewards",'customer');
             $message = 'Promo Reddemed';
         }
