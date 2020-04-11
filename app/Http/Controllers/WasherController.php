@@ -176,7 +176,7 @@ class WasherController extends Controller
             $is_washer = true;
             $status = 200;
             $title = "Yes! We have found a shine specialist for you!";
-            $message = 'Yes! We have found a shine specialist for you! You can check your booking status in “Bookings” > “Scheduled” tab.';
+            $message = "Yes! We have found a shine specialist for you!\n You can check your booking status in “Bookings” > “Scheduled” tab.";
             $result = NotificationController::sendPushNotification($message,$washes->user_id,'wash_accept',"Bookings",'customer');
             $message = "Accepted successfully";
 
@@ -289,11 +289,11 @@ class WasherController extends Controller
                 $stamp = PromoStamps::create($data);
                 $profile->unrewarded_booking = 0;
                 $profile->save();
-                $message = 'Congratulations! You have successfully redeemed $7 off T&C applies.';
+                $message = "Congratulations!\n You have successfully redeemed $7\n off T&C applies.";
                 $result = NotificationController::sendPushNotification($message,'reedeem_stamp',$washes->user_id,"Reward",'customer');
             }
             $title = "Bookings";
-            $push = "Yay, your vehicle has been cleaned! You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab. "; 
+            $push = "Yay, your vehicle has been cleaned!\n You can rate your shine specialist and check out your vehicle photos in “Bookings” > “History” tab. "; 
             $result = NotificationController::sendPushNotification($push,$washes->user_id,'complete_booking',$title,'customer');
             $profile->save();
             $profile = Profile::where('user_id',$request->user()->id)->first();
