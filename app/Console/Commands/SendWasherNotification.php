@@ -55,7 +55,7 @@ class SendWasherNotification extends Command
             );
         }
         if(count($data) > 0){
-            Notifications::insert($data);
+            // Notifications::insert($data);
         }
         if(!is_null($bookings)){
             $bookings = $bookings->pluck('accepted_by');

@@ -165,5 +165,6 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 	Route::post('voteFaq',"FaqVoteController@store");
 
 	Route::get('startedWash', 'WasherController@startedWash');
+	Route::post('readPush', 'NotificationController@readPush');
 
 });
