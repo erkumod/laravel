@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\CarWashBooking;
 use Carbon\Carbon;
+use App\MyCar;
 
 class CarWashBookingObserver
 {
