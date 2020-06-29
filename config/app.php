@@ -178,7 +178,7 @@ return [
 
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-
+        // Kreait\Laravel\Firebase\ServiceProvider::class
     ],
 
     /*

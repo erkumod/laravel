@@ -662,4 +662,23 @@ class WasherController extends Controller
         $response->message = $message;
         return response()->json($response);
     }
+
+    public function checkVerification(Request $request)
+    {
+        $response = new StdClass;
+        $status = 200;
+        $message = "Your account not verify";
+        
+        $user = $request->user();
+        $verification_code = $request->verification_code;
+
+        $response->is_verify = false;
+        
+        if($verification_code == $user->verification_code){
+            $response->is_verify = true;
+            $message = "Your account verify";
+        }
+
+        return response()->json($response);
+    }
 }
