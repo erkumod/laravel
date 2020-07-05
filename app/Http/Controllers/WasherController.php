@@ -14,6 +14,7 @@ use App\PromoStamps;
 use App\Profile;
 use App\User;
 use App\MyCar;
+use App\Logistic;
 use StdClass;
 use Config;
 use Stripe;
@@ -384,6 +385,16 @@ class WasherController extends Controller
             $data['unit_number'] = $request->unit_number;
             $data['code'] = "R-".Carbon::now()->timestamp."-".$request->user()->id;
             $data['status'] = "Redeemed";
+
+            $logistic = array(
+                'name' => $request->user()->name,
+                'date_time' => Carbon::now(),
+                'address' => $request->address,
+                'status' => 'pendding',
+                'type' => 'redemption',
+            );
+
+            Logistic::create($logistic);
             $data = WasherReward::create($data);
             $profile->save();
             $response->data = $data;

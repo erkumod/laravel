@@ -51,6 +51,10 @@ class PromoStampsController extends Controller
         try {
             $promoCode = $request->promo;
             $stamp = PromoStamps::where('user_id',$request->user()->id)->where('code',$promoCode)->where('isValid','valid')->first();
+            $promo = PromoCode::where('status', '1')
+                                ->where(['promo_code' => $promocode, 'user_id' => $request->user()->id])
+                                ->select('*')
+                                ->first();
             $data = array(
                 'reward_value' => 0
             );
@@ -64,6 +68,8 @@ class PromoStampsController extends Controller
                 $data['reward_value'] = 3;
             }elseif($stamp->type == "Mini7" &&  $stamp->isValid == 'valid'){
                 $data['reward_value'] = 7;
+            }elseif($promo && $promo->amount){
+                $data['reward_value'] = $promo->amount;
             }
             $stamp->isValid = 'used';
             $stamp->save();
