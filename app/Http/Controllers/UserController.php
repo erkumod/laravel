@@ -372,10 +372,18 @@ class UserController extends Controller
         // \Log::info(print_r($request->toArray(), true));
         // \Log::info($user_id);
         //this is a test comment 
+        $infoArr = array(
+            'name' => $request->name, 
+            'mobile' => $request->mobile, 
+            'country_code' => $request->country_code
+        );
 
+        if($request->has('address')){
+            $infoArr['address'] = $request->address;
+        }
         if ($id){
             $userdata = User::where('id', $id)
-                            ->update(['name' => $request->name, 'mobile' => $request->mobile, 'country_code' => $request->country_code, 'address'=>$request->address ]); 
+                            ->update($infoArr); 
 
 
             if($request->file('profile_pic')){
@@ -418,6 +426,7 @@ class UserController extends Controller
                 $response->gender = $request->gender;
                 $response->profile_pic = $request->profile_pic;
                 $response->mobile = $request->mobile;
+                $response->address = $request->address;
                 $response->profession = $request->profession;
                 $status = 200;
                 $data->data = $response;
