@@ -294,6 +294,7 @@ class UserController extends Controller
             $user->email = $userdata->email;
             $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
             if(is_null($userProfileData)){
+                User::where('id',$id)->update([ 'address' => $request->address ]);
                 $profile = Profile::create(['user_id' => $id,'dob' => $request->dob,'gender' => $request->gender, 'profession' => $request->profession]);
                 $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
             }
@@ -307,7 +308,7 @@ class UserController extends Controller
             // dump($car_model_id);
             // dd($car_model_id);
             $brand = Brand::where('id',$car_brand_id)->first();
-            $model = Carmodel::where('id',$car_model_id)->first();
+            $model = Carmodel::select('carmodels.*','carmodels.model_name' ,'vehical_types.partner_price','vehical_types.user_price')->where('carmodels.id',$car_model_id)->join('vehical_types', 'vehical_types.id', '=', 'carmodels.vehicletype_id')->first();
             $user->dob="";
             $user->gender="";
             $user->mobile = $userdata->mobile;
@@ -323,6 +324,8 @@ class UserController extends Controller
                 if($userProfileData['PrimaryCar']){
                     $userProfileData['PrimaryCar']->car_brand_name = $brand ? $brand->brand_name : '';
                     $userProfileData['PrimaryCar']->car_model_name = $model ? $model->model_name : '';
+                    $userProfileData['PrimaryCar']->user_price = $model ? $model->user_price : '';
+                    $userProfileData['PrimaryCar']->partner_price = $model ? $model->partner_price : '';
                     $userProfileData['PrimaryCar']->car_brand_name = $userProfileData['PrimaryCar']->car_brand_name;
                     $userProfileData['PrimaryCar']->car_model_name = $userProfileData['PrimaryCar']->car_model_name;
                 }
@@ -1028,6 +1031,33 @@ class UserController extends Controller
         }
         $response->status = $status;
         $response->message = $message;
+        return response()->json($response);
+    }
+
+    public function editAddress(Request $request)
+    {
+        // $rules = [
+        //     'address' => 'required',
+        // ];
+        // $validator = Validator::make([
+        //     'address' => $request->address,
+        // ], $rules);
+        // if($validator->fails()) {
+        //     return response()->json(['success'=> false, 'error'=> "Please Enter Address"],200);
+        // }
+
+        $userId = $request->user()->id;
+        $response = new StdClass;
+        $status = 200;
+        $message = "Address Upadte";
+        $address = $request->address;
+        $user = User::where('id', $userId)->first();
+        $user->address = $address;
+        $user->update(); 
+        
+        $response->status = $status;
+        $response->message = $message;
+
         return response()->json($response);
     }
 }
