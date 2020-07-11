@@ -109,6 +109,23 @@ class AuthApiController extends Controller
                 ])) {
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 200);
             }
+            $userStatus = "";
+            $userPaymentStatus = "";
+            if($user && $user->status == "0"){
+                $user->status = "pending";
+            }elseif($user && $user->status == "1"){
+                $$user->status = "approve";
+            }else{
+                $$user->status = "reject";
+            }
+
+            if($user && $user->payment_status == "0"){
+                $user->payment_status = "pending";
+            }elseif($user->payment_status == "1"){
+                $user->payment_status = "paid";
+            }else{
+                $user->payment_status = "reject";
+            }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
             return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 200);
