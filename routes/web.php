@@ -5,6 +5,8 @@ Route::get('/', function () {
     return view('landingpage');
 });
 
+Route::get('/TestAndroidNotification', 'NotificationController@TestAndroidNotification')->name('TestAndroidNotification');
+
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'PagesController@index')->name('home');

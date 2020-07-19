@@ -102,7 +102,7 @@ class CarWashBookingController extends Controller
             $mybooking->end_time        = $request->end_time;        
             $mybooking->card_id        = $request->card_id;        
             $mybooking->lot_no        = $request->lot_no;        
-            $mybooking->fare        = $request->fare;        
+            $mybooking->fare        = $request->fare;
             $mybooking->payment_type        = $request->payment_type; 
             $mybooking->lat             = $request->lat??0; 
             $mybooking->lon             = $request->lon??0; 
@@ -127,6 +127,8 @@ class CarWashBookingController extends Controller
                 $mybooking->color_code = $vehicle->color_code;
                 $mybooking->color_name = $vehicle->color_name;
                 $mybooking->type = $vehicle->type;
+                $mybooking->partner_price        = $vehicle->partner_price;    
+                $mybooking->user_price        = $vehicle->user_price;    
             }
                 // $profile = Profile::where('user_id',$user_id)->first();
                 // dd($profile);\

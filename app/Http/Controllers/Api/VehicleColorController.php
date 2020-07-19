@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\VehicleColor;
+use App\VehicalType;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,28 @@ class VehicleColorController extends Controller
     public function index()
     {
         $vehicle = VehicleColor::get();
+    	$status = 400;
+        $message = "Data not found";
+        $response = [];
+        if($vehicle){
+            $response['vehicles'] = $vehicle;
+            $status = 200;
+    		$message = 'Data retrieved successfully';
+        }
+        $response = (object) $response;
+        $response->status = $status;
+    	$response->message = $message;
+        return response()->json($response);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function type()
+    {
+        $vehicle = VehicalType::get();
     	$status = 400;
         $message = "Data not found";
         $response = [];

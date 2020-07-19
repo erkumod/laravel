@@ -291,6 +291,7 @@ class UserController extends Controller
                             ->first(); 
             $user = new StdClass;
             $user->name = $userdata->name;
+            $user->verification_status = $userdata->verification_status;
             $user->email = $userdata->email;
             $userProfileData = Profile::with('PrimaryCar','PrimaryCard')->where('user_id', $id)->first();
             if(is_null($userProfileData)){
@@ -756,6 +757,11 @@ class UserController extends Controller
             "color_code"    => $request->color_code,
         );
 
+        $carmodel = Carmodel::where('id',$request->model_id)->first();
+        $vehicalType  = App\VehicalType::find($carmodel->vehicletype_id);
+        $dataArr["partner_price"]    = $vehicalType->partner_price;
+        $dataArr["user_price"]    = $vehicalType->user_price;
+
         $car = MyCar::where([
 			['user_id', '=', $user_id],
 			['primary', '=', true]
@@ -1053,6 +1059,7 @@ class UserController extends Controller
         $address = $request->address;
         $user = User::where('id', $userId)->first();
         $user->address = $address;
+        $user->user_type = "washer";
         $user->update(); 
         
         $response->status = $status;

@@ -46,7 +46,7 @@ class AuthApiController extends Controller
         $password = $request->password;
         $mobile = $request->mobile;
         $email_token = base64_encode($request->email);
-        $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password)]);
+        $user = User::create(['email' => $email, 'name' => $name, 'mobile' => $mobile, 'password' => Hash::make($password), 'admin_id' => null]);
         $profile = Profile::create(['user_id' => $user->id,'dob' => $request->dob,'gender' => $request->gender, 'profession' => $request->profession]);
         $user->sendEmailVerificationNotification();
         return response()->json(['success' => true, 'error' => 'Successfully registerd,Please verify your email and then try to login'], 200);

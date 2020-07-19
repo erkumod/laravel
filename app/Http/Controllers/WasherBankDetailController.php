@@ -50,6 +50,10 @@ class WasherBankDetailController extends Controller
                 'account_number'            => $input['account_number'],
                 'account_holder'            => $input['account_holder']
             );
+            $user = User::where('id', $request->user()->id)->first();
+            $user->user_type = "washer";
+            $user->update(); 
+        
             if($request->file('image')){
                 $image = $request->file('image');
                 $path = public_path().'/image/'.$request->user()->id."/";
