@@ -313,6 +313,7 @@ class UserController extends Controller
             $user->dob="";
             $user->gender="";
             $user->mobile = $userdata->mobile;
+            $user->user_type = $userdata->user_type;
             $user->profession="";
             $user->profile_pic="";
             $user->country_code = $userdata->country_code;
