@@ -31,7 +31,6 @@ class WasherController extends Controller
         $status = 200;
         $message = "User not registered as washer.";
         $washer = 0;
-        User::where('id',$request->user()->id)->update(['user_type'=>'washer']);
         if ($washerdetails){
             $status = 200;
             $washer = 1;
