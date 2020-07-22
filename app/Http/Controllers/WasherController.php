@@ -31,6 +31,7 @@ class WasherController extends Controller
         $status = 200;
         $message = "User not registered as washer.";
         $washer = 0;
+        User::where('id',$request->user()->id)->update(['user_type'=>'washer']);
         if ($washerdetails){
             $status = 200;
             $washer = 1;
@@ -632,6 +633,8 @@ class WasherController extends Controller
             // $washerdetails->ac_type     = $request->ac_type;
             $washerdetails->ifsc_code       = $request->ifsc_code;
             $washerdetails->update();
+
+            User::where('id',$user_id)->update(['user_type'=> 'washer']);
         }
         // else{
             // $washerdetails->bank_ac_no      = $request->bank_ac_no;
